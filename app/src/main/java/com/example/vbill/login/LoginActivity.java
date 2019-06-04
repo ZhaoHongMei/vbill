@@ -7,10 +7,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.vbill.R;
 import com.example.vbill.login.details.LoginOptionFragment;
+import com.example.vbill.login.details.LoginUsePhoneFragment;
 
 /**
  * A login screen that offers login via email/password.
@@ -18,6 +20,7 @@ import com.example.vbill.login.details.LoginOptionFragment;
 public class LoginActivity extends AppCompatActivity{
 
     private LoginOptionFragment loginOptionFragment;
+    private LoginUsePhoneFragment loginPhoneFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +32,11 @@ public class LoginActivity extends AppCompatActivity{
         }
         initFragment();
         //go to phone number login fragment
-        TextView phoneLogin = findViewById(R.id.login_by_phone);
-//        phoneLogin.setOnClickListener(new );
     }
 
     private void initFragment(){
         loginOptionFragment = LoginOptionFragment.getInstance();
+        loginPhoneFragment = LoginUsePhoneFragment.getInstance();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.login_fragment,loginOptionFragment);

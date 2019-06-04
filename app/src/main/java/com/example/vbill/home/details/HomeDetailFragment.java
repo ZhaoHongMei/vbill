@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,15 @@ import com.example.vbill.adapter.ParentBillRecyclerAdapter;
 import com.example.vbill.bean.ChildBill;
 import com.example.vbill.bean.ParentBill;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-//import okhttp3.FormBody;
-//import okhttp3.Request;
-//import okhttp3.RequestBody;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class HomeDetailFragment extends Fragment {
     private static HomeDetailFragment fragment;
@@ -67,13 +71,7 @@ public class HomeDetailFragment extends Fragment {
         if (getArguments() != null) {
 
         }
-//        RequestBody requestBody = new FormBody.Builder()
-//                .add("M","4")
-//                .build();
-//        Request getBillListRq = new Request.Builder().
-//                url("http://192.168.0.103:8089/resources/accountlist")
-//                .post(requestBody)
-//                .build();
+
     }
 
     @Override
@@ -90,7 +88,7 @@ public class HomeDetailFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
+        queryBillListFromServer();
         //initRecyclerAdapter
         initBillList2();
         //parent
@@ -157,5 +155,27 @@ public class HomeDetailFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    private void queryBillListFromServer(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient();
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("M","4")
+                        .build();
+                Request getBillListRq = new Request.Builder()//""//
+                        .url("http://192.168.0.103:8089/resources/accountlist")
+                        .post(requestBody)
+                        .build();
+                try {
+                    Response response = client.newCall(getBillListRq).execute();
+                    String stringResonese = response.toString();
+                    Log.d("response11111111", stringResonese);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

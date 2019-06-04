@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import com.example.vbill.R;
 
 public class LoginUsePhoneFragment extends Fragment {
-    private LoginUsePhoneFragment fragment;
+    private static LoginUsePhoneFragment fragment;
 
     public  LoginUsePhoneFragment(){
         //constructor
     }
-    private LoginUsePhoneFragment getInstance(){
+    public static LoginUsePhoneFragment getInstance(){
         try{
             if(fragment == null){
                 fragment = new LoginUsePhoneFragment();
@@ -24,7 +24,6 @@ public class LoginUsePhoneFragment extends Fragment {
         }
         return fragment;
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
