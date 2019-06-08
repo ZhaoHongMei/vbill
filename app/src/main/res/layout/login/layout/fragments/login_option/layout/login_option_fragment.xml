@@ -42,7 +42,7 @@
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
         <Button
-            android:id="@+id/login_by_vchat"
+            android:id="@+id/login_by_wechat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/login_vchat"

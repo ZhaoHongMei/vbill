@@ -13,14 +13,23 @@ import android.widget.TextView;
 import com.example.vbill.R;
 import com.example.vbill.login.details.LoginOptionFragment;
 import com.example.vbill.login.details.LoginUsePhoneFragment;
+import com.example.vbill.util.Constants;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity{
-
+    public static IWXAPI api;
     private LoginOptionFragment loginOptionFragment;
     private LoginUsePhoneFragment loginPhoneFragment;
+
+    private  void registerToWechat(){
+        //注册appid
+        api = WXAPIFactory.createWXAPI(this, Constants.APP_ID, false);
+        api.registerApp(Constants.APP_ID);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +39,8 @@ public class LoginActivity extends AppCompatActivity{
         if(actionBar != null){
             actionBar.hide();
         }
+        //注册appid到微信
+        registerToWechat();
         initFragment();
         //go to phone number login fragment
     }

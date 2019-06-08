@@ -19,30 +19,25 @@ import com.example.vbill.adapter.ChildBillRecyclerAdapter;
 import com.example.vbill.adapter.ParentBillRecyclerAdapter;
 import com.example.vbill.bean.ChildBill;
 import com.example.vbill.bean.ParentBill;
+import com.example.vbill.util.Constants;
+import com.example.vbill.util.HttpUtil;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Response;
 
 public class HomeDetailFragment extends Fragment {
+    private static final String TAG = "HomeDetailFragment";
     private static HomeDetailFragment fragment;
-    private  String[] listData= {
-            "碗形猫抓板耐磨猫爪垫大号猫抓板猫咪用品",
-            "可爱长条枕抱枕睡觉可拆洗",
-            "韩版女装气质中长裙雪纺裙",
-            "奥克斯迷你电风扇价格不统一",
-            "你想要的都没有其实全部都是甜甜圈",
-            "你想要的都没有其实全部都是甜甜圈",
-            "你想要的都没有其实全部都是甜甜圈",
-            "你想要的都没有其实全部都是甜甜圈",
-
-    };
+    private String[] listData ={"1","2","3","4"};
 
     private OnFragmentInteractionListener mListener;
     private List<ParentBill> listParent;
@@ -157,25 +152,31 @@ public class HomeDetailFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
     private void queryBillListFromServer(){
-        new Thread(new Runnable() {
+        Log.d(TAG, "queryBillListFromServer: ");
+        String address= Constants.SERVER_PREFIX + "v1/esc/customers/itemsByCustomerId?customerId=123";
+        HttpUtil.sendOkHttpGetRequest(address, new Callback() {
             @Override
-            public void run() {
-                OkHttpClient client = new OkHttpClient();
-                RequestBody requestBody = new FormBody.Builder()
-                        .add("M","4")
-                        .build();
-                Request getBillListRq = new Request.Builder()//""//
-                        .url("http://192.168.0.103:8089/resources/accountlist")
-                        .post(requestBody)
-                        .build();
-                try {
-                    Response response = client.newCall(getBillListRq).execute();
-                    String stringResonese = response.toString();
-                    Log.d("response11111111", stringResonese);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            public void onFailure(Call call, IOException e) {
+
             }
-        }).start();
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "onResponse: "+ responseData);
+            }
+        });
+    }
+
+    public void dealWithResData(String response){
+        Gson gson=new Gson();
+        JsonObject jsonObject = gson.fromJson(response,JsonObject.class);
+        List tempList = new ArrayList();
+        tempList =gson.fromJson(jsonObject.get("item"),new TypeToken<List>() {
+        }.getType());
+        for(int i =0;i<tempList.size();i++){
+            Map itmeMap = (Map) tempList.get(i);
+//            if(itmeMap.)
+        }
     }
 }
