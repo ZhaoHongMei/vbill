@@ -3,18 +3,28 @@ package com.example.vbill.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.vbill.R;
 import com.example.vbill.bean.ChildBill;
 
 import java.util.List;
+import java.util.Map;
+
+import com.bumptech.glide.Glide;
+import com.example.vbill.customizeUI.MyImageView;
+import com.example.vbill.home.HomeActivity;
 
 public class ChildBillRecyclerAdapter extends RecyclerView.Adapter<ChildBillRecyclerAdapter.ViewHolder>{
+    private static final String TAG = "ChildBillRecyclerAdapte";
     private List<ChildBill> mChildBillList;
     private Context mContext;
 
@@ -50,9 +60,9 @@ public class ChildBillRecyclerAdapter extends RecyclerView.Adapter<ChildBillRecy
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                ChildBill childBill = (ChildBill) mChildBillList.get(position);
+                ChildBill childBill =new ChildBill((Map)mChildBillList.get(position));
                 Intent intent = new Intent("android.intent.action.Create");
-                ChildBill detailChildBill = new ChildBill(childBill.getAmounts(), childBill.getCategory(), childBill.getType(), childBill.getImage());
+//                ChildBill detailChildBill = new ChildBill(childBill.getAmounts(), childBill.getCategory(), childBill.getType(), childBill.getImage());
                 intent.putExtra("position",String.valueOf(position));
                 mContext.startActivity(intent);
             }
@@ -63,10 +73,16 @@ public class ChildBillRecyclerAdapter extends RecyclerView.Adapter<ChildBillRecy
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        ChildBill childBill =(ChildBill) mChildBillList.get(i);
-        viewHolder.amounts.setText(childBill.getAmounts());
-        viewHolder.category.setText(childBill.getCategory());
-        viewHolder.image.setImageResource(childBill.getImage());
+        ChildBill childBill =new ChildBill((Map)mChildBillList.get(i));
+        viewHolder.amounts.setText(childBill.getAmount());
+        viewHolder.category.setText(childBill.getCategoryDesc());
+        Log.d(TAG, "onBindViewHolder: "+mContext);
+        final ViewGroup.LayoutParams layoutParams = viewHolder.image.getLayoutParams();
+        layoutParams.width = 100;
+        layoutParams.height = 100;
+        Glide.with(mContext).load(childBill.getImagePath()).into(viewHolder.image);
+//        viewHolder.image.setImageResource(R.drawable.income1);
+//        viewHolder.image.setImageURL(childBill.getImagePath());
     }
 
     @Override

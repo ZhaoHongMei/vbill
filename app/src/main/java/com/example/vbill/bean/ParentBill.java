@@ -12,6 +12,7 @@ public class ParentBill implements Serializable {
         this.billList = billList;
     }
 
+
     public String getDate() {
 //        Date date = new Date();
 //        DateFormat df = DateFormat.getDateInstance(DateFormat.FULL, Locale.CHINA);

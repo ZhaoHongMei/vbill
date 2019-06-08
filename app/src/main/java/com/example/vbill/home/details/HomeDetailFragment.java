@@ -13,9 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.vbill.R;
-import com.example.vbill.adapter.ChildBillRecyclerAdapter;
 import com.example.vbill.adapter.ParentBillRecyclerAdapter;
 import com.example.vbill.bean.ChildBill;
 import com.example.vbill.bean.ParentBill;
@@ -24,6 +24,8 @@ import com.example.vbill.util.HttpUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,9 +42,10 @@ public class HomeDetailFragment extends Fragment {
     private String[] listData ={"1","2","3","4"};
 
     private OnFragmentInteractionListener mListener;
-    private List<ParentBill> listParent;
-    private List<ChildBill> listChild;
-    private ChildBillRecyclerAdapter adapterChild;
+    private List<ParentBill> listParent = new ArrayList<ParentBill>();
+    private List<ChildBill> listChild = new ArrayList<ChildBill>();
+    private RecyclerView recyclerParent;
+    private ImageButton imageButton;
 
     public HomeDetailFragment() {
         // Required empty public constructor
@@ -74,7 +77,8 @@ public class HomeDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_detail, container, false);
-        ImageButton imageButton = (ImageButton)view.findViewById(R.id.createImageButton);
+        imageButton = (ImageButton)view.findViewById(R.id.createImageButton);
+        recyclerParent = view.findViewById(R.id.parent_bill);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,33 +89,27 @@ public class HomeDetailFragment extends Fragment {
         });
         queryBillListFromServer();
         //initRecyclerAdapter
-        initBillList2();
-        //parent
-        RecyclerView recyclerParent = view.findViewById(R.id.parent_bill);
-        LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
-        recyclerParent.setLayoutManager(layoutManager2);
-        recyclerParent.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        ParentBillRecyclerAdapter billByDayRecyclerAdapter = new ParentBillRecyclerAdapter(getContext(),listParent);
-        recyclerParent.setAdapter(billByDayRecyclerAdapter);
+//        initBillList2();
+
         return view;
     }
-    public List initBillList(){
-        listChild = new ArrayList<>();
-        for(int i=0;i<listData.length;i++){
-            ChildBill childBill = new ChildBill("工资","1512","1",R.drawable.income);
-            listChild.add(childBill);
-        }
-        return listChild;
-    }
+//    public List initBillList(){
+//        listChild = new ArrayList<>();
+//        for(int i=0;i<listData.length;i++){
+//            ChildBill childBill = new ChildBill("工资","1512","1",R.drawable.income);
+//            listChild.add(childBill);
+//        }
+//        return listChild;
+//    }
 
-    private List initBillList2(){
-        listParent = new ArrayList<>();
-        for(int i=0;i<2;i++){
-            ParentBill parentBill = new ParentBill("2019年4月20日",initBillList());
-            listParent.add(parentBill);
-        }
-        return listParent;
-    }
+//    private List initBillList2(){
+//        listParent = new ArrayList<>();
+//        for(int i=0;i<2;i++){
+//            ParentBill parentBill = new ParentBill("2019年4月20日",initBillList());
+//            listParent.add(parentBill);
+//        }
+//        return listParent;
+//    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -153,7 +151,7 @@ public class HomeDetailFragment extends Fragment {
     }
     private void queryBillListFromServer(){
         Log.d(TAG, "queryBillListFromServer: ");
-        String address= Constants.SERVER_PREFIX + "v1/esc/customers/itemsByCustomerId?customerId=123";
+        String address= Constants.SERVER_PREFIX + "v1/esc/itemsByCustomerId?customerId=123";
         HttpUtil.sendOkHttpGetRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -163,20 +161,51 @@ public class HomeDetailFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
+                getActivity().runOnUiThread(new Runnable() {
+                     @Override
+                     public void run() {
+                         Gson gson=new Gson();
+                         JsonObject jsonObject = gson.fromJson(responseData,JsonObject.class);
+                         String statusCode =gson.fromJson(jsonObject.get("statusCode"), new TypeToken<String>() {
+                         }.getType());
+                         if (responseData != null && "200".equals(statusCode)) {
+                             try {
+                                 dealWithResData(responseData);
+                                 dealWithAdapter();
+                             } catch (JSONException e) {
+                                 e.printStackTrace();
+                             }
+                         } else {
+                             Toast.makeText(getActivity(), "获取清单失败", Toast.LENGTH_SHORT).show();
+                         }
+                     }
+                });
                 Log.d(TAG, "onResponse: "+ responseData);
             }
+
         });
     }
 
-    public void dealWithResData(String response){
+    public void dealWithResData(String response) throws JSONException {
         Gson gson=new Gson();
         JsonObject jsonObject = gson.fromJson(response,JsonObject.class);
-        List tempList = new ArrayList();
-        tempList =gson.fromJson(jsonObject.get("item"),new TypeToken<List>() {
+        Map tempMap = gson.fromJson(jsonObject.get("data"), new TypeToken<Map>() {
         }.getType());
-        for(int i =0;i<tempList.size();i++){
-            Map itmeMap = (Map) tempList.get(i);
-//            if(itmeMap.)
+        List tempList = (List) tempMap.get("items");
+        for(int i=0;i<tempList.size();i++){
+            Map<String,List> parentItemMap = (Map)tempList.get(i);
+            String date=String.valueOf(parentItemMap.get("date"));
+            Log.d(TAG, "dealWithResData: "+parentItemMap.get("childItem"));
+            ParentBill parentBill = new ParentBill(date,(List) parentItemMap.get("childItem"));
+            listParent.add(parentBill);
         }
+    }
+
+    public void dealWithAdapter(){
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
+        recyclerParent.setLayoutManager(layoutManager2);
+        recyclerParent.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        ParentBillRecyclerAdapter billByDayRecyclerAdapter = new ParentBillRecyclerAdapter(getContext(),listParent);
+        recyclerParent.setAdapter(billByDayRecyclerAdapter);
     }
 }
