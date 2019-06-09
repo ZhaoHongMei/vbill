@@ -4,11 +4,20 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.vbill.R;
+import com.example.vbill.adapter.DiscoveryMenuAdapter;
+import com.example.vbill.bean.DiscoveryMenu;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -21,10 +30,13 @@ import com.example.vbill.R;
  */
 public class HomeDiscoveryFragment extends Fragment {
     private static HomeDiscoveryFragment fragment;
+    Context context;
+    private RecyclerView recyclerView;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -67,6 +79,7 @@ public class HomeDiscoveryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setContentView(R.layout.fragment_home_discovery);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -77,7 +90,41 @@ public class HomeDiscoveryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_discovery, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_discovery, container, false);
+        recyclerView = view.findViewById(R.id.home_discovery_menu);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(5, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        DiscoveryMenuAdapter discoveryMenuAdapter = new DiscoveryMenuAdapter(initDescoveryMenu());
+        recyclerView.setAdapter(discoveryMenuAdapter);
+
+        return view;
+    }
+
+    private List<DiscoveryMenu> initDescoveryMenu() {
+        DiscoveryMenu discoveryMenu1 = new DiscoveryMenu(R.drawable.remenhuodong, "时光手账");
+        DiscoveryMenu discoveryMenu2 = new DiscoveryMenu(R.drawable.remenhuodong, "美食");
+        DiscoveryMenu discoveryMenu3 = new DiscoveryMenu(R.drawable.remenhuodong, "娱乐");
+        DiscoveryMenu discoveryMenu4 = new DiscoveryMenu(R.drawable.remenhuodong, "旅游");
+        DiscoveryMenu discoveryMenu5 = new DiscoveryMenu(R.drawable.remenhuodong, "热门活动");
+        DiscoveryMenu discoveryMenu6 = new DiscoveryMenu(R.drawable.shouzhangben, "限时特惠");
+        DiscoveryMenu discoveryMenu7 = new DiscoveryMenu(R.drawable.shouzhangben, "投资");
+        DiscoveryMenu discoveryMenu8 = new DiscoveryMenu(R.drawable.shouzhangben, "出行");
+        DiscoveryMenu discoveryMenu9 = new DiscoveryMenu(R.drawable.shouzhangben, "购物");
+        DiscoveryMenu discoveryMenu10 = new DiscoveryMenu(R.drawable.shouzhangben, "全部");
+
+        List<DiscoveryMenu> discoveryMenus = new ArrayList<>();
+        discoveryMenus.add(discoveryMenu1);
+        discoveryMenus.add(discoveryMenu2);
+        discoveryMenus.add(discoveryMenu3);
+        discoveryMenus.add(discoveryMenu4);
+        discoveryMenus.add(discoveryMenu5);
+        discoveryMenus.add(discoveryMenu6);
+        discoveryMenus.add(discoveryMenu7);
+        discoveryMenus.add(discoveryMenu8);
+        discoveryMenus.add(discoveryMenu9);
+        discoveryMenus.add(discoveryMenu10);
+        return discoveryMenus;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
