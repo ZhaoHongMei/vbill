@@ -10,18 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.Glide;
 import com.example.vbill.R;
 import com.example.vbill.bean.ChildBill;
 
 import java.util.List;
 import java.util.Map;
-
-import com.bumptech.glide.Glide;
-import com.example.vbill.customizeUI.MyImageView;
-import com.example.vbill.home.HomeActivity;
 
 public class ChildBillRecyclerAdapter extends RecyclerView.Adapter<ChildBillRecyclerAdapter.ViewHolder>{
     private static final String TAG = "ChildBillRecyclerAdapte";

@@ -75,11 +75,13 @@ public class HomeChartFragment extends Fragment {
         incomePaymentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Map selectItem  = (Map) incomePaymentSpinner.getItemAtPosition(position);
-                imageView = view.findViewById(R.id.spinner_image);
-                textView = view.findViewById(R.id.spinner_text);
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.income));
-                textView.setTextColor(Color.WHITE);
+                if(view != null){
+                    Map selectItem  = (Map) incomePaymentSpinner.getItemAtPosition(position);
+                    imageView = view.findViewById(R.id.spinner_image);
+                    textView = view.findViewById(R.id.spinner_text);
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.income));
+                    textView.setTextColor(Color.WHITE);
+                }
             }
 
             @Override
