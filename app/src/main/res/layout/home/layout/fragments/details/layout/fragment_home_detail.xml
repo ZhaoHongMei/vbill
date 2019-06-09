@@ -31,11 +31,10 @@
                         android:textSize="16sp"
                         android:textColor="@color/white"
                         android:layout_alignParentLeft="true"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Q"
-                        android:textColor="@color/white"
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/search"
                         android:layout_alignParentRight="true"/>
                 </RelativeLayout>
                 <!--收支-->
@@ -52,13 +51,13 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="本月结余"
+                            android:text="@string/home_detail_balance"
                             android:textColor="@color/white"
                             android:textSize="14sp"/>
                         <TextView
+                            android:id="@+id/home_detail_balance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="2555.00"
                             android:textColor="@color/white"
                             android:textSize="18sp"/>
                     </LinearLayout>
@@ -80,13 +79,13 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="收入"
+                                android:text="@string/home_detail_income"
                                 android:textColor="@color/white"
                                 android:textSize="14sp"/>
                             <TextView
+                                android:id="@+id/home_detail_income"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="5221.00"
                                 android:textColor="@color/white"
                                 android:textSize="18sp"/>
                         </LinearLayout>
@@ -100,13 +99,13 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="支出"
+                                android:text="@string/home_detail_outcome"
                                 android:textColor="@color/white"
                                 android:textSize="14sp"/>
                             <TextView
+                                android:id="@+id/home_detail_outcome"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="5213.00"
                                 android:textColor="@color/white"
                                 android:textSize="18sp"/>
                         </LinearLayout>

@@ -8,12 +8,35 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:ignore="MissingConstraints">
-        <TextView
+        android:layout_height="match_parent">
+        <!--header 收入与支出-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="test-create-activity"/>
+            android:orientation="horizontal"
+            android:background="@color/colorPrimary">
+            <TextView
+                android:id ="@+id/create_header_income"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="@string/create_header_income"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:clickable="true"/>
+            <TextView
+                android:id="@+id/create_header_outcome"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="@string/create_header_outcome"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:clickable="true"/>
+        </LinearLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

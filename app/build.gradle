@@ -26,21 +26,25 @@ android {
         main {
             res.srcDirs =
                     [
+                            'src/main/res',
+                            'src/main/res/layout/home',
                             'src/main/res/layout/create',
+                            'src/main/res/layout/login',
                             'src/main/res/layout/adapter_layout_template',
+
                             'src/main/res/layout/home/layout/fragments/login',
                             'src/main/res/layout/home/layout/fragments/my',
                             'src/main/res/layout/home/layout/fragments/discovery',
                             'src/main/res/layout/home/layout/fragments/create',
                             'src/main/res/layout/home/layout/fragments/chart',
                             'src/main/res/layout/home/layout/fragments/details',
-                            'src/main/res/layout/home',
+
                             'src/main/res/layout/login/layout/fragments/login_option',
                             'src/main/res/layout/login/layout/fragments/phone',
                             'src/main/res/layout/login/layout/fragments/vchat',
-                            'src/main/res/layout/login',
-                            'src/main/res'
 
+                            'src/main/res/layout/create/layout/fragments/income',
+                            'src/main/res/layout/create/layout/fragments/outcome'
                     ]
         }
     }

@@ -13,11 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vbill.R;
 import com.example.vbill.adapter.ParentBillRecyclerAdapter;
-import com.example.vbill.bean.ChildBill;
 import com.example.vbill.bean.ParentBill;
 import com.example.vbill.util.Constants;
 import com.example.vbill.util.HttpUtil;
@@ -43,9 +43,9 @@ public class HomeDetailFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private List<ParentBill> listParent = new ArrayList<ParentBill>();
-    private List<ChildBill> listChild = new ArrayList<ChildBill>();
     private RecyclerView recyclerParent;
     private ImageButton imageButton;
+    private TextView homeDetailIncome,homeDetailOutcome,homeDetailBalance;
 
     public HomeDetailFragment() {
         // Required empty public constructor
@@ -67,7 +67,7 @@ public class HomeDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            //要传的参数
         }
 
     }
@@ -79,6 +79,10 @@ public class HomeDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_detail, container, false);
         imageButton = (ImageButton)view.findViewById(R.id.createImageButton);
         recyclerParent = view.findViewById(R.id.parent_bill);
+        homeDetailIncome = view.findViewById(R.id.home_detail_income);
+        homeDetailOutcome = view.findViewById(R.id.home_detail_outcome);
+        homeDetailBalance = view.findViewById(R.id.home_detail_balance);
+
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,29 +91,9 @@ public class HomeDetailFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        queryBillListFromServer();
-        //initRecyclerAdapter
-//        initBillList2();
-
+        queryDataFromServer();
         return view;
     }
-//    public List initBillList(){
-//        listChild = new ArrayList<>();
-//        for(int i=0;i<listData.length;i++){
-//            ChildBill childBill = new ChildBill("工资","1512","1",R.drawable.income);
-//            listChild.add(childBill);
-//        }
-//        return listChild;
-//    }
-
-//    private List initBillList2(){
-//        listParent = new ArrayList<>();
-//        for(int i=0;i<2;i++){
-//            ParentBill parentBill = new ParentBill("2019年4月20日",initBillList());
-//            listParent.add(parentBill);
-//        }
-//        return listParent;
-//    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -134,7 +118,14 @@ public class HomeDetailFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        //再次点击fragment时候，清空之前的数据，以免重复
+        if(listParent!=null){
+            listParent.clear();
+        }
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -149,8 +140,9 @@ public class HomeDetailFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-    private void queryBillListFromServer(){
-        Log.d(TAG, "queryBillListFromServer: ");
+
+    private void queryDataFromServer(){
+        Log.d(TAG, "queryDataFromServer: ");
         String address= Constants.SERVER_PREFIX + "v1/esc/itemsByCustomerId?customerId=123";
         HttpUtil.sendOkHttpGetRequest(address, new Callback() {
             @Override
@@ -172,6 +164,7 @@ public class HomeDetailFragment extends Fragment {
                              try {
                                  dealWithResData(responseData);
                                  dealWithAdapter();
+                                 dealWithTextView(responseData);
                              } catch (JSONException e) {
                                  e.printStackTrace();
                              }
@@ -189,8 +182,7 @@ public class HomeDetailFragment extends Fragment {
     public void dealWithResData(String response) throws JSONException {
         Gson gson=new Gson();
         JsonObject jsonObject = gson.fromJson(response,JsonObject.class);
-        Map tempMap = gson.fromJson(jsonObject.get("data"), new TypeToken<Map>() {
-        }.getType());
+        Map tempMap = gson.fromJson(jsonObject.get("data"), new TypeToken<Map>() {}.getType());
         List tempList = (List) tempMap.get("items");
         for(int i=0;i<tempList.size();i++){
             Map<String,List> parentItemMap = (Map)tempList.get(i);
@@ -207,5 +199,16 @@ public class HomeDetailFragment extends Fragment {
         recyclerParent.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         ParentBillRecyclerAdapter billByDayRecyclerAdapter = new ParentBillRecyclerAdapter(getContext(),listParent);
         recyclerParent.setAdapter(billByDayRecyclerAdapter);
+    }
+    public void dealWithTextView(String response){
+        Gson gson=new Gson();
+        JsonObject jsonObject = gson.fromJson(response,JsonObject.class);
+        Map tempMap = gson.fromJson(jsonObject.get("data"), new TypeToken<Map>() {}.getType());
+        String income = (String)((Map)tempMap.get("accountSummary")).get("income");
+        String outcome = (String)((Map)tempMap.get("accountSummary")).get("outcome");
+        String balance = String.valueOf(Double.valueOf(income) - Double.valueOf(outcome));
+        homeDetailIncome.setText(income);
+        homeDetailOutcome.setText(outcome);
+        homeDetailBalance.setText(balance);
     }
 }

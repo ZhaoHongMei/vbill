@@ -16,8 +16,8 @@
         </afterSyncTasks>
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
-        <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res/layout/create" />
-        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res/layout/create;file://$MODULE_DIR$/src/main/res/layout/adapter_layout_template;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/login;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/my;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/discovery;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/create;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/chart;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/details;file://$MODULE_DIR$/src/main/res/layout/home;file://$MODULE_DIR$/src/main/res/layout/login/layout/fragments/login_option;file://$MODULE_DIR$/src/main/res/layout/login/layout/fragments/phone;file://$MODULE_DIR$/src/main/res/layout/login/layout/fragments/vchat;file://$MODULE_DIR$/src/main/res/layout/login;file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/build/generated/res/resValues/debug" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/src/main/res/layout/home;file://$MODULE_DIR$/src/main/res/layout/create;file://$MODULE_DIR$/src/main/res/layout/login;file://$MODULE_DIR$/src/main/res/layout/adapter_layout_template;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/login;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/my;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/discovery;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/create;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/chart;file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/details;file://$MODULE_DIR$/src/main/res/layout/login/layout/fragments/login_option;file://$MODULE_DIR$/src/main/res/layout/login/layout/fragments/phone;file://$MODULE_DIR$/src/main/res/layout/login/layout/fragments/vchat;file://$MODULE_DIR$/src/main/res/layout/create/layout/fragments/income;file://$MODULE_DIR$/src/main/res/layout/create/layout/fragments/outcome;file://$MODULE_DIR$/build/generated/res/resValues/debug" />
         <option name="TEST_RES_FOLDERS_RELATIVE_PATH" value="" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
       </configuration>
@@ -62,7 +62,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/home" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/create" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/login" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/adapter_layout_template" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/login" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/my" type="java-resource" />
@@ -70,12 +73,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/create" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/chart" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/home/layout/fragments/details" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/home" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/login/layout/fragments/login_option" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/login/layout/fragments/phone" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/login/layout/fragments/vchat" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/login" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/create/layout/fragments/income" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/res/layout/create/layout/fragments/outcome" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/assets" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/aidl" isTestSource="false" />

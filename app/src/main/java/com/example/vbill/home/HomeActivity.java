@@ -114,8 +114,6 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
     @Override
     public void onFragmentInteraction(Uri uri) {
         Toast.makeText(this,"fragment",Toast.LENGTH_LONG).show();
-
-
     }
 
     public static void setSpecialItemImageSize(BottomNavigationView view,int width,int height,int index) {
