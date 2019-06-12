@@ -6,5 +6,9 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="grey">#666666</color>
+<<<<<<< HEAD
     <color name="lightGrey">#F1F1F1</color>
+=======
+    <color name="lightGrey">#dddddd</color>
+>>>>>>> fac1d85575873a1f3ae23618912cdc0825d5b3e3
 </resources>

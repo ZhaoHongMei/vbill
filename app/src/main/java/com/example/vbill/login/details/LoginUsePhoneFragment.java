@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,24 +22,34 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vbill.R;
+import com.example.vbill.bean.User;
 import com.example.vbill.util.Constants;
+import com.example.vbill.util.HttpUtil;
+import com.example.vbill.util.LoginUtil;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class LoginUsePhoneFragment extends Fragment {
+public class LoginUsePhoneFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "LoginUsePhoneFragment";
     public static final int LOGIN_SUCCEED = 1;
-    public static final int LOGIN_FAILED= 2;
+    public static final int LOGIN_FAILED = 2;
     public static final int SERVER_CONNECTION_FAILURE = 3;
-    public static final int REGISTER_SUCCEED=4;
-    public static final int REGISTER_FAILED=5;
+    public static final int REGISTER_SUCCEED = 4;
+    public static final int REGISTER_FAILED = 5;
     private static LoginUsePhoneFragment fragment;
     private AutoCompleteTextView usernameView;
     private TextView passwordView;
@@ -50,23 +61,11 @@ public class LoginUsePhoneFragment extends Fragment {
     public SharedPreferences.Editor editor;
     public Gson gson;
     public OkHttpClient client;
+    private FragmentActivity activity;
 
-    public  LoginUsePhoneFragment(){
-        //constructor
-    }
-    public static LoginUsePhoneFragment getInstance(){
-        try{
-            if(fragment == null){
-                fragment = new LoginUsePhoneFragment();
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return fragment;
-    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_phone_fragment, container, false);
         usernameView = view.findViewById(R.id.username);
         passwordView = view.findViewById(R.id.password);
@@ -74,40 +73,33 @@ public class LoginUsePhoneFragment extends Fragment {
         registerText = view.findViewById(R.id.register_text);
         progressBar = view.findViewById(R.id.login_progress);
         signInButton = view.findViewById(R.id.sign_in_button);
+        activity = getActivity();
+        pref = activity.getSharedPreferences("login", activity.MODE_PRIVATE);
+        editor = pref.edit();
+        gson = new Gson();
+        client = new OkHttpClient();
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.sign_in_button:
-                        attemptLogin();
-                        break;
-                    case R.id.register_text:
-//                        goToRegister();
-                    default:
-                        break;
-                }
-            }
-        });
-//        registerText.setOnClickListener(this);
+        signInButton.setOnClickListener(this);
+        registerText.setOnClickListener(this);
 
-//        setStoredToViewIfRemember();
+        setStoredToViewIfRemember();
         return view;
     }
 
-    private void setStoredToViewIfRemember() {
-        boolean isRemember = pref.getBoolean("remember_password", false);
-        if (isRemember) {
-            String username = pref.getString("username", "");
-            String password = pref.getString("password", "");
-            usernameView.setText(username);
-            passwordView.setText(password);
-            remeberPass.setChecked(true);
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                goToSignIn();
+                break;
+            case R.id.register_text:
+                break;
+            default:
+                break;
         }
     }
 
-
-    private void attemptLogin() {
+    private void goToSignIn() {
         usernameView.setError(null);
         passwordView.setError(null);
 
@@ -115,15 +107,9 @@ public class LoginUsePhoneFragment extends Fragment {
         String password = passwordView.getText().toString();
 
         if (isUserNameValid(username) && isPasswordValid(password)) {
-            isUserExisted(username, password);
+            checkIfUserExisted(username, password);
         }
     }
-
-//    private void goToRegister() {
-//        Log.d(TAG, "goToRegister");
-//        Intent intent = new Intent(this, RegisterActivity.class);
-//        startActivity(intent);
-//    }
 
     private boolean isUserNameValid(String username) {
         if (TextUtils.isEmpty(username)) {
@@ -144,112 +130,58 @@ public class LoginUsePhoneFragment extends Fragment {
         return true;
     }
 
-    private void isUserExisted(final String username, final String password) {
-        Log.d(TAG, "check if user is existed in server. username: " + username + " password: " + password);
-        progressBar.setVisibility(View.VISIBLE);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                RequestBody requestBody = new FormBody.Builder()
-                        .add("username", username)
-                        .add("password", password)
-                        .build();
-                String url = Constants.USER_SERVER_PREFIX + "api/v1/login";
-                Log.d(TAG, "url: " + url);
-                Request request = new Request.Builder()
-                        .url(url)
-                        .post(requestBody)
-                        .build();
-                try {
-                    Response response = client.newCall(request).execute();
-                    String responseData = response.body().string();
-                    Log.d(TAG, "responseData: " + responseData);
-                    onCallFinish(responseData);
-                } catch (Exception e) {
-                    onCallException();
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+    private void checkIfUserExisted(String username, String password) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("username", username);
+        map.put("password", password);
+        String userJson = gson.toJson(map);
+        String url = Constants.USER_SERVER_PREFIX + "/v1/esc/login";
 
+        HttpUtil.sendOkHttpPostRequest(userJson, url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d(TAG, "onResponse: " + response.body().string());
+                String responseData = response.body().string();
+                User user = gson.fromJson(responseData,User.class);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+            }
+        });
     }
 
-    public void onCallFinish(String response) {
-        String password = passwordView.getText().toString();
-        try {
+    private void setStoredToViewIfRemember() {
+        boolean isRemember = pref.getBoolean("remember_password", false);
+        if (isRemember) {
+            String username = pref.getString("username", "");
+            String password = pref.getString("password", "");
+            usernameView.setText(username);
+            passwordView.setText(password);
+            remeberPass.setChecked(true);
+        }
+    }
 
-            Message message = new Message();
-            if (!"".equals(response)) {
-                JSONObject user = new JSONObject(response);
-                String username = user.getString("name");
-                String userId = user.getString("id");
-                Log.d(TAG, "onCallFinish: " + username);
-                storeDataToSharedPreference(userId, username, password);
-                message.what = LOGIN_SUCCEED;
-                handler.sendMessage(message);
-            } else {
-                message.what = LOGIN_FAILED;
-                handler.sendMessage(message);
+    public LoginUsePhoneFragment() {
+        //constructor
+    }
+
+    public static LoginUsePhoneFragment getInstance() {
+        try {
+            if (fragment == null) {
+                fragment = new LoginUsePhoneFragment();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return fragment;
     }
-
-    public void onCallException() {
-        Message message = new Message();
-        message.what = SERVER_CONNECTION_FAILURE;
-        handler.sendMessage(message);
-    }
-
-    private void storeDataToSharedPreference(String userId, String username, String password) {
-        editor = pref.edit();
-        if (remeberPass.isChecked()) {
-            editor.putBoolean("remember_password", true);
-            editor.putString("username", username);
-            editor.putString("password", password);
-        } else {
-            editor.clear();
-        }
-        editor.putString("loginName", username);
-        editor.putString("userId", userId);
-        Log.d(TAG, "storeDataToSharedPreference: " + pref.getString("loginName", ""));
-        editor.apply();
-    }
-
-    public Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case LOGIN_SUCCEED:
-                    hideProgressBar();
-                    break;
-                case LOGIN_FAILED:
-                    hideProgressBar();
-                    loginFailed();
-                    break;
-                case SERVER_CONNECTION_FAILURE:
-                    hideProgressBar();
-                    serverConnectFailed();
-                default:
-                    break;
-            }
-        }
-    };
-
-
-    public void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    public void loginFailed() {
-        Toast.makeText(getActivity(), "用户名或者密码不正确", Toast.LENGTH_SHORT).show();
-    }
-
-    public void serverConnectFailed(){
-        Log.d(TAG, "serverConnectFailed");
-
-        Toast.makeText(getActivity(),"对不起，处理失败，我们会尽快修复。",Toast.LENGTH_SHORT).show();
-    }
-
 
 }
