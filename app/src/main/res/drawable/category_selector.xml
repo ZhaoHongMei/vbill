@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--设置背景颜色-->
+    <item android:state_selected="true"  android:drawable="@drawable/category_bg_checked"/>
+    <item android:state_selected="false" android:drawable="@drawable/category_bg_unchecked"/>
+    <!--设置文字颜色-->
+    <!--<item android:state_selected="true"  android:color="@color/black"/>-->
+    <!--<item android:state_selected="false" android:color="@color/white"/>-->
+</selector>

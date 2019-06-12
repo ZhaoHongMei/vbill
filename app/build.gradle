@@ -31,6 +31,7 @@ android {
                             'src/main/res/layout/create',
                             'src/main/res/layout/login',
                             'src/main/res/layout/adapter_layout_template',
+                            'src/main/res/layout/anim',
 
                             'src/main/res/layout/home/layout/fragments/login',
                             'src/main/res/layout/home/layout/fragments/my',

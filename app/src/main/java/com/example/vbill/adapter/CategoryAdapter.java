@@ -1,8 +1,6 @@
 package com.example.vbill.adapter;
 
 import android.content.Context;
-import android.media.Image;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +17,11 @@ import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
     private static final String TAG = "CategoryAdapter";
+    private OnItemClickListener mOnItemClickListener;
     private List<Category> mCategoryList;
     private Context mContext;
+    private int lastSelectIndex;
+    private View lastSelectedView;
 
     public CategoryAdapter(Context mContext, List<Category> categoryList) {
         this.mCategoryList = categoryList;
@@ -34,10 +35,26 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         return holder;
     }
 
+    @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Category category = mCategoryList.get(i);
         viewHolder.textView.setText(category.getDescription());
         Glide.with(mContext).load(category.getImagePath()).into(viewHolder.imageView);
+        viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lastSelectedView != null && lastSelectIndex !=-1){
+                    //setSelected 是与 xml中相对应的
+                    lastSelectedView.setSelected(false);
+                }
+                lastSelectIndex = i;
+                v.setSelected(true);
+                lastSelectedView = v;
+                //显示layout
+                CreateActivity.showCreateBodyView();
+                CreateActivity.setSelectCategory(category);
+            }
+        });
     }
 
     @Override
@@ -46,13 +63,24 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        View categoryView;
         ImageView imageView;
         TextView textView;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            categoryView = itemView;
             textView = itemView.findViewById(R.id.category_txt);
             imageView = itemView.findViewById(R.id.category_image);
         }
     }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
 }

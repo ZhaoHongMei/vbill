@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -35,6 +36,7 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
         HomeDiscoveryFragment.OnFragmentInteractionListener,
         HomeMyFragment.OnFragmentInteractionListener,
         HomeLoginFragment.OnFragmentInteractionListener{
+    private static final String TAG = "HomeActivity";
 
     private Fragment homeDetailFragment;
     private Fragment homeChartFragment;
@@ -62,11 +64,12 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
         //set fragments
         initFragment();
     }
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.home_detail:
                     replacementFragment(homeDetailFragment);
@@ -88,11 +91,16 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
         }
     };
     private void initFragment(){
-        homeDetailFragment= HomeDetailFragment.getInstance();
-        homeChartFragment = HomeChartFragment.getInstance();
-        homeDiscoveryFragment = HomeDiscoveryFragment.getInstance();
-        homeMyFragment = HomeMyFragment.getInstance();
-        homeLoginFragment = HomeLoginFragment.getInstance();
+//        homeDetailFragment= HomeDetailFragment.getInstance();
+//        homeChartFragment = HomeChartFragment.getInstance();
+//        homeDiscoveryFragment = HomeDiscoveryFragment.getInstance();
+//        homeMyFragment = HomeMyFragment.getInstance();
+//        homeLoginFragment = HomeLoginFragment.getInstance();
+        homeDetailFragment = new HomeDetailFragment();
+        homeChartFragment = new HomeChartFragment();
+        homeDiscoveryFragment = new HomeDiscoveryFragment();
+        homeMyFragment = new HomeMyFragment();
+        homeLoginFragment = new HomeLoginFragment();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -102,6 +110,7 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
             fragmentTransaction.replace(R.id.home_fragment_container,homeDetailFragment);
         }
         fragmentTransaction.commit();
+        Log.d(TAG, "initFragment: " + "okkkkk");
     }
 
     public void  replacementFragment(Fragment fragment){
@@ -116,6 +125,7 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
         Toast.makeText(this,"fragment",Toast.LENGTH_LONG).show();
     }
 
+    //设置按钮的位置
     public static void setSpecialItemImageSize(BottomNavigationView view,int width,int height,int index) {
         BottomNavigationMenuView menuView = (BottomNavigationMenuView) view.getChildAt(0);
         try {
