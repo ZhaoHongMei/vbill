@@ -9,9 +9,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_create">CreateActivity</string>
     <string name="title_home">Home</string>
@@ -46,17 +44,14 @@
     <!--create activity-->
     <string name="create_header_income">收入</string>
     <string name="create_header_outcome">支出</string>
-<<<<<<< HEAD
     <string name="create_body_comment">备注</string>
     <string name="create_body_time">时间</string>
     <string name="create_body_amount">金额</string>
     <string name="create_body_done">完成</string>
     <string name="create_body_cancel">取消</string>
-=======
 
     <!--home chart Fragment-->
     <string name="no_data">您还没有该时间段内该类型的记账哦！</string>
     <string name="total_summary_in">总收入: </string>
     <string name="total_summary_out">总支出: </string>
->>>>>>> fac1d85575873a1f3ae23618912cdc0825d5b3e3
 </resources>
