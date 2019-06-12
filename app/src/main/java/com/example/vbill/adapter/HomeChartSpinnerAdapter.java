@@ -15,12 +15,12 @@ public class HomeChartSpinnerAdapter {
         incomeMap.put("logo", R.drawable.income1);
         incomeMap.put("itemName","收入");
 
-        Map<String,Object> paymentMap = new HashMap<>();
-        paymentMap.put("logo", R.drawable.payment1);
-        paymentMap.put("itemName","支出");
+        Map<String,Object> outcomeMap = new HashMap<>();
+        outcomeMap.put("logo", R.drawable.outcome1);
+        outcomeMap.put("itemName","支出");
 
         listMaps.add(incomeMap);
-        listMaps.add(paymentMap);
+        listMaps.add(outcomeMap);
 
         return listMaps;
     }

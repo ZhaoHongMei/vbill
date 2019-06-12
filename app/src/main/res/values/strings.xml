@@ -29,6 +29,7 @@
     <string name="login_title">登陆</string>
     <string name="login_app_name">微账单</string>
     <string name="login_vchat">微信登陆</string>
+    <string name="login_myapp">登陆/注册</string>
     <string name="login_phone">手机号登陆</string>
     <!--home details Fragment-->
     <string name="home_detail_balance">本月结余</string>
@@ -45,4 +46,9 @@
     <!--create activity-->
     <string name="create_header_income">收入</string>
     <string name="create_header_outcome">支出</string>
+
+    <!--home chart Fragment-->
+    <string name="no_data">您还没有该时间段内该类型的记账哦！</string>
+    <string name="total_summary_in">总收入: </string>
+    <string name="total_summary_out">总支出: </string>
 </resources>
