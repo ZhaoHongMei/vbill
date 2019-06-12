@@ -23,7 +23,7 @@ import com.example.vbill.R;
 import com.example.vbill.home.details.HomeChartFragment;
 import com.example.vbill.home.details.HomeCreateFragment;
 import com.example.vbill.home.details.HomeDetailFragment;
-import com.example.vbill.home.details.HomeDiscoveryFragment;
+import com.example.vbill.home.details.discovery.HomeDiscoveryFragment;
 import com.example.vbill.home.details.HomeLoginFragment;
 import com.example.vbill.home.details.HomeMyFragment;
 

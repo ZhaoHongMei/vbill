@@ -54,4 +54,7 @@
     <string name="no_data">您还没有该时间段内该类型的记账哦！</string>
     <string name="total_summary_in">总收入: </string>
     <string name="total_summary_out">总支出: </string>
+
+
+    <string name="title_activity_investment">InvestmentActivity</string>
 </resources>
