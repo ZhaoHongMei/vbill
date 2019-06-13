@@ -22,7 +22,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".home.HomeActivity"
-            android:label="@string/title_activity_home">
+            android:label="@string/title_activity_home"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -42,7 +43,8 @@
 
         <activity
             android:name=".create.CreateActivity"
-            android:label="@string/title_activity_create">
+            android:label="@string/title_activity_create"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.Create" />
 

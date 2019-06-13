@@ -86,19 +86,20 @@ public class CreateActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("sharedata",MODE_PRIVATE);
         Log.d(TAG, "onCreate: sharedPreferences" + sharedPreferences.getString("categorysummary",""));
         String categorysummary = sharedPreferences.getString("categorysummary","");
-        if("".equals(categorysummary)){
+//        if("".equals(categorysummary)){
             getCategorySummary();
-        }else{
-            Gson gson=new Gson();
-            JsonObject responseJsonDate = gson.fromJson(categorysummary,JsonObject.class);
-            categorySummaryEntity = gson.fromJson(responseJsonDate,CategorySummaryEntity.class);
-            Log.d(TAG, "onCreate: categorySummaryEntity" + categorySummaryEntity);
-        }
+//        }else{
+//            Gson gson=new Gson();
+//            JsonObject responseJsonDate = gson.fromJson(categorysummary,JsonObject.class);
+//            categorySummaryEntity = gson.fromJson(responseJsonDate,CategorySummaryEntity.class);
+//            Log.d(TAG, "onCreate: categorySummaryEntity" + categorySummaryEntity);
+//            List<TextView> preTxtBtn = new ArrayList<>();
+//            preTxtBtn.add(createHeaderIncome);
+//            clickCategoryBtn(outcomeCategoryList,"out",preTxtBtn,createHeaderOutcome);
+//        }
 //        getCategorySummary();
         //一进页面默认加载收入的数据
-        List<TextView> preTxtBtn = new ArrayList<>();
-        preTxtBtn.add(createHeaderIncome);
-        clickCategoryBtn(outcomeCategoryList,"out",preTxtBtn,createHeaderOutcome);
+
 
         //点击收入支出请求数据重新渲染相应的数据
         createHeaderIncome.setOnClickListener(new View.OnClickListener() {
@@ -193,7 +194,9 @@ public class CreateActivity extends AppCompatActivity {
                                 editor.putString("categorysummary", String.valueOf(responseJsonDate.get("data")));
                                 editor.apply();
                             }
-
+                            List<TextView> preTxtBtn = new ArrayList<>();
+                            preTxtBtn.add(createHeaderIncome);
+                            clickCategoryBtn(outcomeCategoryList,"out",preTxtBtn,createHeaderOutcome);
                         }
 
                     }
