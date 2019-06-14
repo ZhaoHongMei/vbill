@@ -92,7 +92,6 @@ public class HomeDetailFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        queryDataFromServer();
         return view;
     }
 
@@ -122,6 +121,7 @@ public class HomeDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        queryDataFromServer();
         //再次点击fragment时候，清空之前的数据，以免重复
         if(listParent!=null){
             listParent.clear();

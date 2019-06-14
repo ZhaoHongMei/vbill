@@ -2,14 +2,20 @@ package com.example.vbill.home.details;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.vbill.R;
 
 
@@ -21,10 +27,17 @@ import com.example.vbill.R;
  * Use the {@link HomeMyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeMyFragment extends Fragment {
+public class HomeMyFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "HomeMyFragment";
     private static HomeMyFragment fragment;
     private OnFragmentInteractionListener mListener;
     private boolean loginFlag = false;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+
+    private LinearLayout homeMylogin;
+    private ImageView userPhoto;
+    private TextView loginText;
 
     public HomeMyFragment() {
         // Required empty public constructor
@@ -37,17 +50,18 @@ public class HomeMyFragment extends Fragment {
         return fragment;
     }
 
-    public static HomeMyFragment getInstance(){
-        try{
-            if(fragment == null){
+    public static HomeMyFragment getInstance() {
+        try {
+            if (fragment == null) {
                 fragment = new HomeMyFragment();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        fragment.setArguments(arg);
         return fragment;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,16 +72,18 @@ public class HomeMyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: ");
+        pref = getContext().getSharedPreferences("login", getContext().MODE_PRIVATE);
+        editor = pref.edit();
         // Inflate the layout for this fragment
         View homeMyView = inflater.inflate(R.layout.fragment_home_my, container, false);
-        LinearLayout homeMylogin = homeMyView.findViewById(R.id.home_my_login);
-        homeMylogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent("android.intent.action.Login");
-                startActivity(intent);
-            }
-        });
+        homeMylogin = homeMyView.findViewById(R.id.home_my_login);
+        userPhoto = homeMyView.findViewById(R.id.user_photo);
+        loginText = homeMyView.findViewById(R.id.login_text);
+
+        homeMylogin.setOnClickListener(this);
+        userPhoto.setOnClickListener(this);
+
         return homeMyView;
     }
 
@@ -77,6 +93,85 @@ public class HomeMyFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
+    public void onResume() {
+        super.onResume();
+        refreshInternal();
+    }
+
+    private void refreshInternal() {
+        if (pref == null) {
+            pref = getContext().getSharedPreferences("login", getContext().MODE_PRIVATE);
+        }
+        String loginName = pref.getString("loginName", "");
+        Log.d(TAG, "refreshInternal: " + loginName);
+        if ("".equals(loginName)) {
+            userPhoto.setImageResource(R.drawable.login);
+            loginText.setText(R.string.not_login);
+            loginText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent("android.intent.action.Login");
+                    startActivity(intent);
+                }
+            });
+            userPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent("android.intent.action.Login");
+                    startActivity(intent);
+                }
+            });
+        } else {
+            String defaultUserPhoto = "http://47.102.197.196:1301/v1/esc/images/defaultUserPhoto.png";
+            String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
+
+            Glide.with(getContext()).load(photoPath).into(userPhoto);
+            loginText.setText(R.string.log_off);
+            loginText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putString("loginName", "");
+                    editor.apply();
+                    refreshInternal();
+                }
+            });
+
+            userPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDialogImage();
+                }
+            });
+        }
+    }
+
+    private void showDialogImage() {
+        String defaultUserPhoto = "http://47.102.197.196:1301/v1/esc/images/defaultUserPhoto.png";
+        String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
+
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View imgEntryView = inflater.inflate(R.layout.dialog_image, null);
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
+        ImageView dialogImageView = imgEntryView.findViewById(R.id.dialog_image);
+        Glide.with(getContext()).load(photoPath).into(dialogImageView);
+        dialogImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+        dialog.setView(imgEntryView);
+        dialog.show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+        }
+    }
+
 
     @Override
     public void onAttach(Context context) {
