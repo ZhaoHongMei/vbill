@@ -76,14 +76,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/create_body_comment"
-                        android:gravity="center"/>
+                        android:gravity="center" />
                 </LinearLayout>
                 <!---->
                 <EditText
                     android:id="@+id/create_body_comment"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:paddingLeft="10dp"/>
             </LinearLayout>
             <!--2时间-->
             <LinearLayout
@@ -106,12 +109,21 @@
                         android:gravity="center"/>
                 </LinearLayout>
                 <!--时间的控件-->
-                <EditText
+                <!--<DatePicker-->
+                    <!--android:id="@+id/create_body_time"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:calendarViewShown="false">-->
+                <!--</DatePicker>-->
+                <TextView
                     android:id="@+id/create_body_time"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content" />
-                tv
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bottom_border"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/black"/>
+
             </LinearLayout>
 
             <!--3金额-->
@@ -132,14 +144,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/create_body_amount"
-                        android:gravity="center"/>
+                        android:gravity="center" />
                 </LinearLayout>
                 <!--输入金额-->
                 <EditText
                     android:id="@+id/create_body_amount"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"/>
             </LinearLayout>
 
             <!--4完成和取消-->
