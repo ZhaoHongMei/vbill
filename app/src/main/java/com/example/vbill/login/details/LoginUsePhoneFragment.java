@@ -97,10 +97,18 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
                 goToSignIn();
                 break;
             case R.id.register_text:
+                gotoRegister();
                 break;
             default:
                 break;
         }
+    }
+
+    private void gotoRegister(){
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.login_fragment,RegisterFragment.getInstance())
+                .commit();
     }
 
     private void goToSignIn() {
@@ -111,6 +119,7 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
         String password = passwordView.getText().toString();
 
         if (isUserNameValid(username) && isPasswordValid(password)) {
+            progressBar.setVisibility(View.VISIBLE);
             editor.putString("username", username);
             editor.putString("password", password);
             checkIfUserExisted(username, password);
@@ -150,6 +159,7 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getActivity(), "对不起，处理失败，我们会尽快修复。", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -165,6 +175,7 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            progressBar.setVisibility(View.GONE);
                             Intent intent = new Intent(getActivity(), HomeActivity.class);
                             startActivity(intent);
                         }
@@ -173,6 +184,7 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(getActivity(), "用户名或密码不正确！", Toast.LENGTH_SHORT).show();
                         }
                     });

@@ -35,7 +35,7 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
         HomeCreateFragment.OnFragmentInteractionListener,
         HomeDiscoveryFragment.OnFragmentInteractionListener,
         HomeMyFragment.OnFragmentInteractionListener,
-        HomeLoginFragment.OnFragmentInteractionListener{
+        HomeLoginFragment.OnFragmentInteractionListener {
     private static final String TAG = "HomeActivity";
 
     private Fragment homeDetailFragment;
@@ -44,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
     private Fragment homeMyFragment;
     private Fragment homeLoginFragment;
     private boolean login = false;
-    private List<Map<String,Object>> listMaps;
+    private List<Map<String, Object>> listMaps;
 
 
     @Override
@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.hide();
         }
 
@@ -90,7 +90,8 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
             return false;
         }
     };
-    private void initFragment(){
+
+    private void initFragment() {
 //        homeDetailFragment= HomeDetailFragment.getInstance();
 //        homeChartFragment = HomeChartFragment.getInstance();
 //        homeDiscoveryFragment = HomeDiscoveryFragment.getInstance();
@@ -104,35 +105,37 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if(login){
-            fragmentTransaction.replace(R.id.home_fragment_container,homeLoginFragment);
-        }else{
-            fragmentTransaction.replace(R.id.home_fragment_container,homeDetailFragment);
+        if (login) {
+            fragmentTransaction.replace(R.id.home_fragment_container, homeLoginFragment);
+        } else {
+            fragmentTransaction.replace(R.id.home_fragment_container, homeDetailFragment);
         }
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         Log.d(TAG, "initFragment: " + "okkkkk");
     }
 
-    public void  replacementFragment(Fragment fragment){
+    public void replacementFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.home_fragment_container,fragment);
+        fragmentTransaction.replace(R.id.home_fragment_container, fragment);
         fragmentTransaction.commit();
     }
+
     //implement Fragment OnFragmentInteractionListener
     @Override
     public void onFragmentInteraction(Uri uri) {
-        Toast.makeText(this,"fragment",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "fragment", Toast.LENGTH_LONG).show();
     }
 
     //设置按钮的位置
-    public static void setSpecialItemImageSize(BottomNavigationView view,int width,int height,int index) {
+    public static void setSpecialItemImageSize(BottomNavigationView view, int width, int height, int index) {
         BottomNavigationMenuView menuView = (BottomNavigationMenuView) view.getChildAt(0);
         try {
             BottomNavigationItemView item = (BottomNavigationItemView) menuView.getChildAt(index);
             ImageView imageView = item.findViewById(android.support.design.R.id.icon);
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(120,120);
-            params.setMargins(0,-50,0,0);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(120, 120);
+            params.setMargins(0, -50, 0, 0);
             params.gravity = Gravity.CENTER;
             imageView.setLayoutParams(params);
         } catch (Exception e) {

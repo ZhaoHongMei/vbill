@@ -4,8 +4,8 @@ public class Constants {
     public static final int CHOOSE_FROM_ALBUM = 0;
     public static final int TAKE_PHOTO = 1;
 
-    public static final String USER_SERVER_PREFIX = "http://47.102.197.196:1301/";//"http://47.102.197.196:1301/";
-    public static final String NOTE_SERVER_PREFIX = "http://192.168.1.105:8501/";
+    public static final String USER_SERVER_PREFIX = "http://47.102.197.196:1301/";
+    public static final String LOCAL_USER_SERVER_PREFIX = "http://192.168.1.102:1301/";
     //花300大洋得到的appid，在官网上拷贝的例子
     public static final String APP_ID = "wxd477edab60670232";
 

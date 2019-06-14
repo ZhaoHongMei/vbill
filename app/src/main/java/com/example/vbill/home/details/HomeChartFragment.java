@@ -115,7 +115,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
         dateAdapter = new DateAdapter(dateItems, this,dateNumber);
         dateRecyclerView.setAdapter(dateAdapter);
         Log.d(TAG, "onCreateView: dateNumber" + dateNumber);
-        changeDateType(dateType);
+
         //自动滚动到最后一个Item
 //            linearLayoutManager.setStackFromEnd(linearLayoutManager.findLastVisibleItemPosition() - linearLayoutManager.findFirstVisibleItemPosition() < dateAdapter.getItemCount() - 1);
 
@@ -160,6 +160,12 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
 
     private void initView() {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        changeDateType(dateType);
     }
 
     @Override
