@@ -274,9 +274,7 @@ public class CreateActivity extends AppCompatActivity {
                             }
                             List<TextView> preTxtBtn = new ArrayList<>();
                             preTxtBtn.add(createHeaderIncome);
-
                             clickCategoryBtn(outcomeCategoryList,"out",preTxtBtn,createHeaderOutcome);
-
 
                             //获取intent的参数，判断是更改还是创建
                             Intent intent = getIntent();
@@ -290,7 +288,6 @@ public class CreateActivity extends AppCompatActivity {
                                 createTime.setText(childBill.getCreateDay().replace("/","-"));
                                 showCreateBodyView();
                             }
-                            clickCategoryBtn(outcomeCategoryList, "out", preTxtBtn, createHeaderOutcome);
 
                         }
 
