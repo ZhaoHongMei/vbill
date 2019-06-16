@@ -57,7 +57,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
 
                 DateItem dateItem = mDateItemList.get(position);
                 mFragment.generateCharts(position + 1);
-                Toast.makeText(v.getContext(), "You clicked view " + dateItem.getNumber() + " : " + dateItem.getDateName(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(v.getContext(), "You clicked view " + dateItem.getNumber() + " : " + dateItem.getDateName(), Toast.LENGTH_SHORT).show();
             }
         });
         return viewHolder;

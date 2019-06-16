@@ -3,9 +3,12 @@ package com.example.vbill.home.details;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.vbill.R;
+import com.example.vbill.util.Constants;
 
 
 /**
@@ -123,15 +128,25 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 }
             });
         } else {
-            String defaultUserPhoto = "http://47.102.197.196:1301/v1/esc/images/defaultUserPhoto.png";
+            String defaultUserPhoto = Constants.USER_SERVER_PREFIX + "v1/esc/images/defaultUserPhoto.png";
             String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
 
-            Glide.with(getContext()).load(photoPath).into(userPhoto);
+            //Glide.with(getContext()).load(photoPath).into(userPhoto);
+            Glide.with(getContext()).load(photoPath).asBitmap().centerCrop().into(new BitmapImageViewTarget(userPhoto) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    userPhoto.setImageDrawable(circularBitmapDrawable);
+                }
+            });
             loginText.setText(R.string.log_off);
             loginText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     editor.putString("loginName", "");
+                    editor.remove("userId");
+                    editor.remove("userPhotoPath");
                     editor.apply();
                     refreshInternal();
                 }
@@ -147,7 +162,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showDialogImage() {
-        String defaultUserPhoto = "http://47.102.197.196:1301/v1/esc/images/defaultUserPhoto.png";
+        String defaultUserPhoto = Constants.USER_SERVER_PREFIX + "v1/esc/images/defaultUserPhoto.png";
         String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());

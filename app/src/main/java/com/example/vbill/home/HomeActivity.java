@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -45,7 +46,6 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
     private Fragment homeLoginFragment;
     private boolean login = false;
     private List<Map<String, Object>> listMaps;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +119,7 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.home_fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 

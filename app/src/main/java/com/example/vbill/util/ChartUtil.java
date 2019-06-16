@@ -50,8 +50,13 @@ public class ChartUtil {
         HttpUtil.sendOkHttpGetRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Toast.makeText(homeChartFragment.getContext(), "对不起，获取数据失败，请稍后重试。", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
+                homeChartFragment.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(homeChartFragment.getContext(), "对不起，获取数据失败，请稍后重试。", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
@@ -62,10 +67,11 @@ public class ChartUtil {
                 homeChartFragment.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
                         List<Point> linePoints = chartVo.getLinePoints();
                         List<Point> piePoints = chartVo.getPiePoints();
-                        String totalAmount=chartVo.getTotalAmount();
-                        if (piePoints.size() > 0) {
+                        String totalAmount = chartVo.getTotalAmount();
+                        if (piePoints != null && piePoints.size() > 0) {
                             lineChart.setVisibility(View.VISIBLE);
                             pieChart.setVisibility(View.VISIBLE);
                             noDataView.setVisibility(View.GONE);
@@ -88,6 +94,9 @@ public class ChartUtil {
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
         ChartVO chartVO = gson.fromJson(jsonObject.get("data"), ChartVO.class);
+        if (chartVO == null) {
+            chartVO = new ChartVO();
+        }
         return chartVO;
     }
 

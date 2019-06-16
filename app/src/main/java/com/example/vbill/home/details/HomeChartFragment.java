@@ -55,6 +55,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
     private static int month = calendar.get(Calendar.MONTH) + 1;
     private static int day = calendar.get(Calendar.DAY_OF_MONTH);
     public SharedPreferences pref;
+    public SharedPreferences loginPref;
     public FragmentActivity activity;
     public SharedPreferences.Editor editor;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -78,8 +79,9 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
     private int dateType;
     private int dateNumber;
     private String accountType;
-    private String customerId = "123";
+    private String customerId;
     private LinearLayoutManager linearLayoutManager;
+    private View spinnerSelectedView;
 
 
     @Override
@@ -89,6 +91,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
         activity = getActivity();
         pref = activity.getSharedPreferences("chart", activity.MODE_PRIVATE);
         editor = pref.edit();
+        loginPref = activity.getSharedPreferences("login", activity.MODE_PRIVATE);
         dateType = pref.getInt("dateType", Constants.DATE_TYPE_WEEK);
         dateNumber = pref.getInt(Constants.WEEK_DATE_NUMBER, DateUtil.getCurrentWeek());
         accountType = pref.getString("accountType", Constants.ACCOUNT_OUT);
@@ -103,6 +106,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
         dateRecyclerView = view.findViewById(R.id.date_recycler_view);
         lineChart = (LineChartView) view.findViewById(R.id.all_analysis_line);
         pieChart = (PieChartView) view.findViewById(R.id.customer_pie_show);
+        customerId = String.valueOf(loginPref.getInt("userId", -1));
 
         weekView.setOnClickListener(this);
         monthView.setOnClickListener(this);
@@ -112,7 +116,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         dateRecyclerView.setLayoutManager(linearLayoutManager);
         List<DateItem> dateItems = DateUtil.getDateItems(dateType);
-        dateAdapter = new DateAdapter(dateItems, this,dateNumber);
+        dateAdapter = new DateAdapter(dateItems, this, dateNumber);
         dateRecyclerView.setAdapter(dateAdapter);
         Log.d(TAG, "onCreateView: dateNumber" + dateNumber);
 
@@ -128,6 +132,9 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemSelected: " + view);
+                if (view == null) {
+                    Log.d(TAG, "onItemSelected: getChildAt "+view);
+                }
                 Map selectItem = (Map) incomePaymentSpinner.getItemAtPosition(position);
                 if (view != null) {
                     imageView = view.findViewById(R.id.spinner_image);
@@ -155,6 +162,8 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
 
             }
         });
+
+        changeDateType(dateType);
         return view;
     }
 
@@ -165,7 +174,6 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onResume() {
         super.onResume();
-        changeDateType(dateType);
     }
 
     @Override
@@ -186,7 +194,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
     }
 
     private void changeDateType(int mdateType) {
-        Log.d(TAG, "changeDateType: " + mdateType);
+        Log.d(TAG, "changeDateType:dateType " + mdateType);
         TextView view = weekView;
         editor.putInt("dateType", mdateType);
         editor.apply();
@@ -207,6 +215,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
             default:
                 break;
         }
+        Log.d(TAG, "changeDateType:dateNumber " + dateNumber);
         refreshRecyclerView(mdateType, dateNumber);
         generateCharts();
         GradientDrawable weekDrawable = (GradientDrawable) weekView.getBackground();
@@ -247,8 +256,9 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
     }
 
     private void refreshRecyclerView(int dateType, int dateNumber) {
+        Log.d(TAG, "refreshRecyclerView: " + dateNumber);
         List<DateItem> dateItems = DateUtil.getDateItems(dateType);
-        dateAdapter = new DateAdapter(dateItems, this,dateNumber);
+        dateAdapter = new DateAdapter(dateItems, this, dateNumber);
         dateRecyclerView.smoothScrollToPosition(dateNumber);
         dateRecyclerView.setAdapter(dateAdapter);
     }

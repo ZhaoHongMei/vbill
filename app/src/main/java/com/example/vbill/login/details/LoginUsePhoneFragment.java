@@ -66,6 +66,8 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
     public Gson gson;
     public OkHttpClient client;
     private FragmentActivity activity;
+    private ImageView openEyeView;
+    private ImageView closeEyeView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,6 +79,8 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
         registerText = view.findViewById(R.id.register_text);
         progressBar = view.findViewById(R.id.login_progress);
         signInButton = view.findViewById(R.id.sign_in_button);
+        openEyeView = view.findViewById(R.id.eye_code);
+        closeEyeView = view.findViewById(R.id.eye_code_close);
         activity = getActivity();
         pref = activity.getSharedPreferences("login", activity.MODE_PRIVATE);
         editor = pref.edit();
@@ -85,6 +89,8 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
 
         signInButton.setOnClickListener(this);
         registerText.setOnClickListener(this);
+        openEyeView.setOnClickListener(this);
+        closeEyeView.setOnClickListener(this);
 
         setStoredToViewIfRemember();
         return view;
@@ -99,15 +105,25 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
             case R.id.register_text:
                 gotoRegister();
                 break;
+            case R.id.eye_code:              //使密码可见
+                openEyeView.setVisibility(View.GONE);
+                closeEyeView.setVisibility(View.VISIBLE);
+                passwordView.setInputType(131073);
+                break;
+            case R.id.eye_code_close:       //使密码不可见
+                openEyeView.setVisibility(View.VISIBLE);
+                closeEyeView.setVisibility(View.GONE);
+                passwordView.setInputType(129);
+                break;
             default:
                 break;
         }
     }
 
-    private void gotoRegister(){
+    private void gotoRegister() {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.login_fragment,RegisterFragment.getInstance())
+                .replace(R.id.login_fragment, RegisterFragment.getInstance())
                 .commit();
     }
 
