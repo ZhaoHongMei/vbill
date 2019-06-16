@@ -36,7 +36,8 @@
     <string name="home_detail_title">天天记账</string>
     <!--home me Fragment-->
     <string name="not_login">未登陆</string>
-    <string name="log_off">注销</string>
+    <string name="change_user">切换用户</string>
+    <string name="log_off">退出登陆</string>
     <string name="default_user_photo">http://47.102.197.196:1201/v1/esc/images/defaultUserPhoto.png</string>
     <string name="set_up">设置</string>
     <!--PhoneLogin Fragment-->

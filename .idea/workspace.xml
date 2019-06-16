@@ -6,7 +6,6 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="sendOkHttp" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
   <component name="CMakeSettings">
@@ -16,20 +15,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b115151f-0596-441f-b7be-a9b39ce858e7" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/arrow_right.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/close_eye.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/open_eye.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/create/CreateActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/create/CreateActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/HomeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/HomeActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeChartFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeChartFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeDetailFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeDetailFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeMyFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeMyFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/login/details/LoginUsePhoneFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/vbill/login/details/LoginUsePhoneFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/home/layout/fragments/chart/layout/chart_spinner_item.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/home/layout/fragments/chart/layout/chart_spinner_item.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/home/layout/fragments/my/layout/fragment_home_my.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/home/layout/fragments/my/layout/fragment_home_my.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/login/layout/fragments/phone/layout/login_phone_fragment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/login/layout/fragments/phone/layout/login_phone_fragment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -53,55 +42,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="HomeChartFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeChartFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="108" column="68" selection-start-line="108" selection-start-column="21" selection-end-line="108" selection-end-column="68" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HomeCreateFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeCreateFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1026">
-              <caret line="62" column="23" selection-start-line="62" selection-start-column="23" selection-end-line="62" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HomeDetailFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeDetailFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="92" column="68" selection-start-line="91" selection-start-column="8" selection-end-line="92" selection-end-column="68" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="CreateActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/create/CreateActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="355">
-              <caret line="180" column="43" selection-start-line="180" selection-start-column="43" selection-end-line="180" selection-end-column="43" />
-              <folding>
-                <element signature="e#2314#2315#0" expanded="true" />
-                <element signature="e#2351#2352#0" expanded="true" />
-                <element signature="e#13440#13441#0" expanded="true" />
-                <element signature="e#13498#13499#0" expanded="true" />
-                <element signature="e#13545#13546#0" expanded="true" />
-                <element signature="e#13600#13601#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="2050">
+              <caret line="158" column="21" selection-start-line="158" selection-start-column="8" selection-end-line="158" selection-end-column="21" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HttpUtil.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/util/HttpUtil.java">
+      <file leaf-file-name="HomeCreateFragment.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeCreateFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
-              <caret line="33" column="27" selection-start-line="33" selection-start-column="27" selection-end-line="33" selection-end-column="27" />
+            <state relative-caret-position="-76">
+              <caret line="46" column="39" lean-forward="true" selection-start-line="46" selection-start-column="39" selection-end-line="46" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -2395,17 +2349,17 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/vbill/adapter/DateAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/vbill/login/details/RegisterFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/circular.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeMyFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/vbill/adapter/HomeChartSpinnerAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/HomeActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeChartFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/home/layout/fragments/chart/layout/chart_spinner_item.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/home/layout/fragments/my/layout/fragment_home_my.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/vbill/login/details/LoginUsePhoneFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/login/layout/fragments/phone/layout/login_phone_fragment.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeDetailFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/vbill/create/CreateActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/home/layout/fragments/my/layout/fragment_home_my.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeMyFragment.java" />
       </list>
     </option>
   </component>
@@ -2536,11 +2490,6 @@
             <path>
               <item name="vbill" type="1abcf292:AndroidViewProjectNode" />
               <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="manifests" type="f94875db:AndroidManifestsGroupNode" />
-            </path>
-            <path>
-              <item name="vbill" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
             </path>
             <path>
@@ -2548,6 +2497,13 @@
               <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
               <item name="vbill" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="vbill" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="vbill" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="create" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="vbill" type="1abcf292:AndroidViewProjectNode" />
@@ -2573,6 +2529,12 @@
               <item name="vbill" type="1abcf292:AndroidViewProjectNode" />
               <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="res" type="d4f16f75:AndroidResFolderNode" />
+            </path>
+            <path>
+              <item name="vbill" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="layout" type="ddeffd01:AndroidResFolderTypeNode" />
             </path>
             <path>
               <item name="vbill" type="1abcf292:AndroidViewProjectNode" />
@@ -2731,6 +2693,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="Android Profiler" order="7" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -2743,11 +2706,11 @@
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info active="true" anchor="bottom" id="Logcat" order="7" visible="true" weight="0.22772278" />
+      <window_info anchor="bottom" id="Logcat" order="7" visible="true" weight="0.014144272" />
       <window_info id="Captures" order="2" weight="0.25" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26742628" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24932976" />
       <window_info anchor="bottom" id="Build" order="7" weight="0.32956153" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="right" id="Gradle" order="3" />
@@ -2913,17 +2876,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeMyFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2502">
-          <caret line="160" column="9" selection-start-line="160" selection-start-column="9" selection-end-line="160" selection-end-column="9" />
-          <folding>
-            <element signature="e#5879#5880#0" expanded="true" />
-            <element signature="e#5936#5937#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/income1.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -2989,13 +2941,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="40" column="24" selection-start-line="40" selection-start-column="18" selection-end-line="40" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/arrow_right.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -3005,16 +2950,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="247">
           <caret line="13" column="14" lean-forward="true" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/home/layout/fragments/my/layout/fragment_home_my.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="112" column="19" selection-start-line="112" selection-start-column="19" selection-end-line="112" selection-end-column="19" />
         </state>
       </provider>
       <provider editor-type-id="android-designer2">
@@ -3055,13 +2990,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeCreateFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1026">
-          <caret line="62" column="23" selection-start-line="62" selection-start-column="23" selection-end-line="62" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeDetailFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -3069,25 +2997,67 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/create/CreateActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/util/HttpUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="180" column="43" selection-start-line="180" selection-start-column="43" selection-end-line="180" selection-end-column="43" />
-          <folding>
-            <element signature="e#2314#2315#0" expanded="true" />
-            <element signature="e#2351#2352#0" expanded="true" />
-            <element signature="e#13440#13441#0" expanded="true" />
-            <element signature="e#13498#13499#0" expanded="true" />
-            <element signature="e#13545#13546#0" expanded="true" />
-            <element signature="e#13600#13601#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="301">
+          <caret line="39" column="7" lean-forward="true" selection-start-line="39" selection-start-column="7" selection-end-line="39" selection-end-column="7" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/util/HttpUtil.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/login/layout/activity_login.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="33" column="27" selection-start-line="33" selection-start-column="27" selection-end-line="33" selection-end-column="27" />
+        <state />
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="38" column="29" selection-start-line="38" selection-start-column="18" selection-end-line="38" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/home/layout/fragments/my/layout/fragment_home_my.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="83">
+          <caret line="114" column="50" selection-start-line="114" selection-start-column="29" selection-end-line="114" selection-end-column="50" />
+          <folding>
+            <element signature="e#5206#5227#0" expanded="true" />
+            <element signature="e#6221#6238#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeMyFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="188" column="33" lean-forward="true" selection-start-line="188" selection-start-column="33" selection-end-line="188" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeLoginFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="163">
+          <caret line="55" column="35" selection-start-line="55" selection-start-column="18" selection-end-line="55" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/create/CreateActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2050">
+          <caret line="158" column="21" selection-start-line="158" selection-start-column="8" selection-end-line="158" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/vbill/home/details/HomeCreateFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-76">
+          <caret line="46" column="39" lean-forward="true" selection-start-line="46" selection-start-column="39" selection-end-line="46" selection-end-column="39" />
         </state>
       </provider>
     </entry>

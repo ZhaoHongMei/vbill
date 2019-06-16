@@ -43,6 +43,9 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
     private LinearLayout homeMylogin;
     private ImageView userPhoto;
     private TextView loginText;
+    private LinearLayout logOutLayout;
+    private LinearLayout changeUserLayout;
+    private LinearLayout generalLogoutLayout;
 
     public HomeMyFragment() {
         // Required empty public constructor
@@ -85,9 +88,14 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         homeMylogin = homeMyView.findViewById(R.id.home_my_login);
         userPhoto = homeMyView.findViewById(R.id.user_photo);
         loginText = homeMyView.findViewById(R.id.login_text);
+        logOutLayout = homeMyView.findViewById(R.id.me_log_out);
+        changeUserLayout = homeMyView.findViewById(R.id.me_change_user);
+        generalLogoutLayout = homeMyView.findViewById(R.id.general_logout_layout);
 
         homeMylogin.setOnClickListener(this);
         userPhoto.setOnClickListener(this);
+        logOutLayout.setOnClickListener(this);
+        changeUserLayout.setOnClickListener(this);
 
         return homeMyView;
     }
@@ -111,6 +119,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         String loginName = pref.getString("loginName", "");
         Log.d(TAG, "refreshInternal: " + loginName);
         if ("".equals(loginName)) {
+            generalLogoutLayout.setVisibility(View.GONE);
             userPhoto.setImageResource(R.drawable.login);
             loginText.setText(R.string.not_login);
             loginText.setOnClickListener(new View.OnClickListener() {
@@ -128,6 +137,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 }
             });
         } else {
+            generalLogoutLayout.setVisibility(View.VISIBLE);
             String defaultUserPhoto = Constants.USER_SERVER_PREFIX + "v1/esc/images/defaultUserPhoto.png";
             String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
 
@@ -140,15 +150,10 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                     userPhoto.setImageDrawable(circularBitmapDrawable);
                 }
             });
-            loginText.setText(R.string.log_off);
+            loginText.setText(pref.getString("loginName", ""));
             loginText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    editor.putString("loginName", "");
-                    editor.remove("userId");
-                    editor.remove("userPhotoPath");
-                    editor.apply();
-                    refreshInternal();
                 }
             });
 
@@ -183,7 +188,19 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
+            case R.id.me_log_out:
+                editor.putString("loginName", "");
+                editor.remove("userId");
+                editor.remove("userPhotoPath");
+                editor.apply();
+                refreshInternal();
+                break;
+            case R.id.me_change_user:
+                Intent intent = new Intent("android.intent.action.Login");
+                startActivity(intent);
+                break;
+            default:
+                break;
         }
     }
 
