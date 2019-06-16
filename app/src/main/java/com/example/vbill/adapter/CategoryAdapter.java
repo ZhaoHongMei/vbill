@@ -1,7 +1,9 @@
 package com.example.vbill.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.example.vbill.R;
 import com.example.vbill.bean.Category;
 import com.example.vbill.create.CreateActivity;
+import com.example.vbill.home.HomeActivity;
 
 import java.util.List;
 
@@ -51,6 +54,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
                 v.setSelected(true);
                 lastSelectedView = v;
                 //显示layout
+                Log.d(TAG, "onClick: getHasCategory" + CreateActivity.getHasCategory());
                 CreateActivity.showCreateBodyView();
                 CreateActivity.setSelectCategory(category);
             }

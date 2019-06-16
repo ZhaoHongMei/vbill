@@ -21,6 +21,9 @@ import android.widget.Toast;
 import com.example.vbill.R;
 import com.example.vbill.adapter.ParentBillRecyclerAdapter;
 import com.example.vbill.bean.ParentBill;
+import com.example.vbill.customizeUI.RecyclerViewSpacesItemDecoration;
+import com.example.vbill.customizeUI.datepicker.CustomDatePicker;
+import com.example.vbill.customizeUI.datepicker.DateFormatUtils;
 import com.example.vbill.util.Constants;
 import com.example.vbill.util.HttpUtil;
 import com.google.gson.Gson;
@@ -31,6 +34,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -209,7 +213,12 @@ public class HomeDetailFragment extends Fragment {
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
         recyclerParent.setLayoutManager(layoutManager2);
         recyclerParent.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        ParentBillRecyclerAdapter billByDayRecyclerAdapter = new ParentBillRecyclerAdapter(getContext(), listParent);
+        HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
+//        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION,20);//top间距
+//        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION,20);//底部间距
+//        recyclerParent.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
+
+        ParentBillRecyclerAdapter billByDayRecyclerAdapter = new ParentBillRecyclerAdapter(getContext(),listParent);
         recyclerParent.setAdapter(billByDayRecyclerAdapter);
     }
 
