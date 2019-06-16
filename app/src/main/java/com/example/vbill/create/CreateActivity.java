@@ -2,7 +2,6 @@ package com.example.vbill.create;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -27,6 +26,8 @@ import com.example.vbill.R;
 import com.example.vbill.adapter.CategoryAdapter;
 import com.example.vbill.bean.Category;
 import com.example.vbill.bean.ChildBill;
+import com.example.vbill.customizeUI.datepicker.CustomDatePicker;
+import com.example.vbill.customizeUI.datepicker.DateFormatUtils;
 import com.example.vbill.entity.CategorySummaryEntity;
 import com.example.vbill.home.HomeActivity;
 import com.example.vbill.util.Constants;
@@ -61,8 +62,8 @@ public class CreateActivity extends AppCompatActivity{
     private List<Category> outcomeCategoryList;
     private Button createCancelBtn,createDoneBtn;
     private EditText createAmount,createComment;
-
-
+    private CustomDatePicker mDatePicker, mTimerPicker;
+    private static String hasCategory;
     private static Category selectCategory;
 
     public static Category getSelectCategory() {
@@ -73,6 +74,13 @@ public class CreateActivity extends AppCompatActivity{
         CreateActivity.selectCategory = selectCategory;
     }
 
+    public static String getHasCategory() {
+        return hasCategory;
+    }
+
+    public static void setHasCategory(String hasCategory) {
+        CreateActivity.hasCategory = hasCategory;
+    }
 
 
     @Override
@@ -98,10 +106,13 @@ public class CreateActivity extends AppCompatActivity{
         createAmount = findViewById(R.id.create_body_amount);
         createAmount.setInputType(EditorInfo.TYPE_CLASS_PHONE);
         createAmount.setLines(1);
+
+        initDatePicker();
         createTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerDialog();
+//                showDatePickerDialog();
+                mDatePicker.show(createTime.getText().toString());
             }
         });
 
@@ -111,7 +122,7 @@ public class CreateActivity extends AppCompatActivity{
         Log.d(TAG, "onCreate: sharedPreferences" + sharedPreferences.getString("categorysummary",""));
         String categorysummary = sharedPreferences.getString("categorysummary","");
 //        if("".equals(categorysummary)){
-            getCategorySummary();
+//            getCategorySummary();
 //        }else{
 //            Gson gson=new Gson();
 //            JsonObject responseJsonDate = gson.fromJson(categorysummary,JsonObject.class);
@@ -121,9 +132,9 @@ public class CreateActivity extends AppCompatActivity{
 //            preTxtBtn.add(createHeaderIncome);
 //            clickCategoryBtn(outcomeCategoryList,"out",preTxtBtn,createHeaderOutcome);
 //        }
-//        getCategorySummary();
-        //一进页面默认加载收入的数据
 
+        //一进页面默认加载收入的数据
+        getCategorySummary();
 
         //点击收入支出请求数据重新渲染相应的数据
         createHeaderIncome.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +172,8 @@ public class CreateActivity extends AppCompatActivity{
                 String createCommentText = String.valueOf(createComment.getText());
                 String createAmountText = String.valueOf(createAmount.getText());
                 Map newChildMap = new HashMap<String,String>();
-                newChildMap.put("createDay",createTimeText);
+                newChildMap.put("createDay",createTimeText.replace("-","/"));
+                Log.d(TAG, "onClick: createTimeText" + createTimeText);
                 newChildMap.put("createTime","12:10:12");
                 newChildMap.put("imagePath",selectCategoryItem.getImagePath());
                 newChildMap.put("categoryCode",selectCategoryItem.getCode());
@@ -216,6 +228,10 @@ public class CreateActivity extends AppCompatActivity{
         });
     }
 
+    protected void onDestroy() {
+        super.onDestroy();
+        mDatePicker.onDestroy();
+    }
     public void getCategorySummary(){
         Log.d(TAG, "getCategorySummary: ");
         String address= Constants.SERVER_PREFIX + "v1/esc/categories";
@@ -247,6 +263,20 @@ public class CreateActivity extends AppCompatActivity{
                             List<TextView> preTxtBtn = new ArrayList<>();
                             preTxtBtn.add(createHeaderIncome);
                             clickCategoryBtn(outcomeCategoryList,"out",preTxtBtn,createHeaderOutcome);
+
+
+                            //获取intent的参数，判断是更改还是创建
+                            Intent intent = getIntent();
+                            ChildBill childBill = (ChildBill) intent.getSerializableExtra("bill");
+                            Log.d(TAG, "onCreate: childBill" + childBill);
+                            if(null != childBill){
+                                //显示图标
+
+                                //显示页面数据
+                                createAmount.setText(childBill.getAmount());
+                                createTime.setText(childBill.getCreateDay().replace("/","-"));
+                                showCreateBodyView();
+                            }
                         }
 
                     }
@@ -321,5 +351,28 @@ public class CreateActivity extends AppCompatActivity{
             }
         }, year, month - 1, day);
         datePickerDialog.show();
+    }
+
+    private void initDatePicker() {
+        long beginTimestamp = DateFormatUtils.str2Long("2009-05-01", false);
+        long endTimestamp = System.currentTimeMillis();
+
+        createTime.setText(DateFormatUtils.long2Str(endTimestamp, false));
+
+        // 通过时间戳初始化日期，毫秒级别
+        mDatePicker = new CustomDatePicker(this, new CustomDatePicker.Callback() {
+            @Override
+            public void onTimeSelected(long timestamp) {
+                createTime.setText(DateFormatUtils.long2Str(timestamp, false));
+            }
+        }, beginTimestamp, endTimestamp);
+        // 不允许点击屏幕或物理返回键关闭
+        mDatePicker.setCancelable(false);
+        // 不显示时和分
+        mDatePicker.setCanShowPreciseTime(false);
+        // 不允许循环滚动
+        mDatePicker.setScrollLoop(false);
+        // 不允许滚动动画
+        mDatePicker.setCanShowAnim(false);
     }
 }

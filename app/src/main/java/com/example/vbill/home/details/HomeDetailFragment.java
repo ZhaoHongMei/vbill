@@ -19,6 +19,9 @@ import android.widget.Toast;
 import com.example.vbill.R;
 import com.example.vbill.adapter.ParentBillRecyclerAdapter;
 import com.example.vbill.bean.ParentBill;
+import com.example.vbill.customizeUI.RecyclerViewSpacesItemDecoration;
+import com.example.vbill.customizeUI.datepicker.CustomDatePicker;
+import com.example.vbill.customizeUI.datepicker.DateFormatUtils;
 import com.example.vbill.util.Constants;
 import com.example.vbill.util.HttpUtil;
 import com.google.gson.Gson;
@@ -29,6 +32,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -198,6 +202,11 @@ public class HomeDetailFragment extends Fragment {
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
         recyclerParent.setLayoutManager(layoutManager2);
         recyclerParent.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
+//        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION,20);//top间距
+//        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION,20);//底部间距
+//        recyclerParent.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
+
         ParentBillRecyclerAdapter billByDayRecyclerAdapter = new ParentBillRecyclerAdapter(getContext(),listParent);
         recyclerParent.setAdapter(billByDayRecyclerAdapter);
     }
@@ -212,4 +221,26 @@ public class HomeDetailFragment extends Fragment {
         homeDetailOutcome.setText(outcome);
         homeDetailBalance.setText(balance);
     }
+//    private void initTimerPicker() {
+//        String beginTime = "2017-01";
+//        String endTime = DateFormatUtils.long2Str(System.currentTimeMillis(), true);
+//
+//        mTvSelectedTime.setText(endTime);
+//
+//        // 通过日期字符串初始化日期，格式请用：yyyy-MM-dd HH:mm
+//        mTimerPicker = new CustomDatePicker(this, new CustomDatePicker.Callback() {
+//            @Override
+//            public void onTimeSelected(long timestamp) {
+//                mTvSelectedTime.setText(DateFormatUtils.long2Str(timestamp, true));
+//            }
+//        }, beginTime, endTime);
+//        // 允许点击屏幕或物理返回键关闭
+//        mTimerPicker.setCancelable(true);
+//        // 显示时和分
+//        mTimerPicker.setCanShowPreciseTime(true);
+//        // 允许循环滚动
+//        mTimerPicker.setScrollLoop(true);
+//        // 允许滚动动画
+//        mTimerPicker.setCanShowAnim(true);
+//    }
 }

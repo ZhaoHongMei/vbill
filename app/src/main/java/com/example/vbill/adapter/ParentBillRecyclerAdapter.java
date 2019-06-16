@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import com.example.vbill.R;
 import com.example.vbill.bean.ParentBill;
+import com.example.vbill.customizeUI.RecyclerViewSpacesItemDecoration;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ParentBillRecyclerAdapter extends RecyclerView.Adapter<ParentBillRecyclerAdapter.ViewHolder>{
@@ -56,6 +58,10 @@ public class ParentBillRecyclerAdapter extends RecyclerView.Adapter<ParentBillRe
             time = itemView.findViewById(R.id.time);
             recyclerView = (RecyclerView)itemView.findViewById(R.id.child_bill);
             RecyclerView.LayoutManager manager = new LinearLayoutManager(itemView.getContext());
+            HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
+            stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION,10);//top间距
+            stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION,10);//底部间距
+            recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
             recyclerView.setLayoutManager(manager);
         }
     }

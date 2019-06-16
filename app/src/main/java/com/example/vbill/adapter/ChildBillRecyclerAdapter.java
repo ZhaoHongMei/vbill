@@ -56,12 +56,23 @@ public class ChildBillRecyclerAdapter extends RecyclerView.Adapter<ChildBillRecy
                 int position = holder.getAdapterPosition();
                 ChildBill childBill =new ChildBill((Map)mChildBillList.get(position));
                 Intent intent = new Intent("android.intent.action.Create");
-//                ChildBill detailChildBill = new ChildBill(childBill.getAmounts(), childBill.getCategory(), childBill.getType(), childBill.getImage());
-                intent.putExtra("position",String.valueOf(position));
+                ChildBill detailChildBill = new ChildBill(childBill.getItemId(),childBill.getCreateDay(),childBill.getCreateTime(),childBill.getImagePath(),
+                        childBill.getCategoryCode(),childBill.getCategoryDesc(),childBill.getType(),childBill.getAmount());
+                intent.putExtra("bill",detailChildBill);
                 mContext.startActivity(intent);
-            }
 
+            }
         });
+//        holder.image.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int position = holder.getAdapterPosition();
+//                ChildBill childBill =new ChildBill((Map)mChildBillList.get(position));
+//                Intent intent = new Intent("android.intent.action.Create");
+//                intent.putExtra("category",childBill.getCategoryCode());
+//                mContext.startActivity(intent);
+//            }
+//        });
         return holder;
     }
 
@@ -72,11 +83,10 @@ public class ChildBillRecyclerAdapter extends RecyclerView.Adapter<ChildBillRecy
         viewHolder.category.setText(childBill.getCategoryDesc());
         Log.d(TAG, "onBindViewHolder: "+mContext);
         final ViewGroup.LayoutParams layoutParams = viewHolder.image.getLayoutParams();
-        layoutParams.width = 100;
-        layoutParams.height = 100;
+        layoutParams.width = 80;
+        layoutParams.height = 80;
         Glide.with(mContext).load(childBill.getImagePath()).into(viewHolder.image);
-//        viewHolder.image.setImageResource(R.drawable.income1);
-//        viewHolder.image.setImageURL(childBill.getImagePath());
+        int viewHolderLayoutParams = viewHolder.getLayoutPosition();
     }
 
     @Override

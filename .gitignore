@@ -5,6 +5,13 @@
 .gradle/buildOutputCleanup/outputFiles.bin
 app/app.iml
 .gitignore
+app/build/
+.idea/caches/build_file_checksums.ser
+.idea/misc.xml
+.idea/workspace.xml
+app/build.gradle
+vbill.iml
+
 
 
 
