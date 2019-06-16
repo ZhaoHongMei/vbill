@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.vbill.R;
+import com.example.vbill.util.Constants;
 
 
 /**
@@ -123,7 +124,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 }
             });
         } else {
-            String defaultUserPhoto = "http://47.102.197.196:1301/v1/esc/images/defaultUserPhoto.png";
+            String defaultUserPhoto = Constants.USER_SERVER_PREFIX + "v1/esc/images/defaultUserPhoto.png";
             String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
 
             Glide.with(getContext()).load(photoPath).into(userPhoto);
@@ -132,6 +133,8 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onClick(View v) {
                     editor.putString("loginName", "");
+                    editor.remove("userId");
+                    editor.remove("userPhotoPath");
                     editor.apply();
                     refreshInternal();
                 }
@@ -147,7 +150,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showDialogImage() {
-        String defaultUserPhoto = "http://47.102.197.196:1301/v1/esc/images/defaultUserPhoto.png";
+        String defaultUserPhoto = Constants.USER_SERVER_PREFIX + "v1/esc/images/defaultUserPhoto.png";
         String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());

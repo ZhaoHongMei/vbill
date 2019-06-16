@@ -112,7 +112,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.take_photo:
                 Log.d(TAG, "onClick: take photo");
-                Toast.makeText(getActivity(), "click take photo", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "click take photo", Toast.LENGTH_SHORT).show();
                 if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     android.support.v4.app.ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA}, Constants.TAKE_PHOTO);
                 } else {
