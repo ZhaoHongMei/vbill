@@ -81,6 +81,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
     private String accountType;
     private String customerId;
     private LinearLayoutManager linearLayoutManager;
+    private View spinnerSelectedView;
 
 
     @Override
@@ -131,6 +132,9 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemSelected: " + view);
+                if (view == null) {
+                    Log.d(TAG, "onItemSelected: getChildAt "+view);
+                }
                 Map selectItem = (Map) incomePaymentSpinner.getItemAtPosition(position);
                 if (view != null) {
                     imageView = view.findViewById(R.id.spinner_image);
