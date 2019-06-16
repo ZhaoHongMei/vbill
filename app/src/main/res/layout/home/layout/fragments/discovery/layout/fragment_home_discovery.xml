@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".home.details.discovery.HomeDiscoveryFragment">
+
+    <!-- <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+-->
+        <ScrollView
+            android:id="@+id/weather_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:src="@drawable/discovery_title_img1" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/home_discovery_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="200dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <android.support.v4.view.ViewPager
+                            android:id="@+id/viewPager"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:layout_editor_absoluteX="8dp"
+                            tools:layout_editor_absoluteY="0dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="35dip"
+                            android:layout_gravity="bottom"
+                            android:background="#33000000"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:weightSum="10">
+
+                            <TextView
+                                android:id="@+id/tv_pager_title"
+                                android:layout_width="0dp"
+                                android:layout_height="35dip"
+                                android:layout_weight="8"
+                                android:gravity="center_vertical"
+                                android:paddingLeft="8dip"
+                                android:text="很长的标题。。。。。你懂我意思吧"
+                                android:textColor="@color/white" />
+                            <!--用来动态添加轮播小点-->
+                            <LinearLayout
+                                android:id="@+id/lineLayout_dot"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="2"
+                                android:gravity="center|right"
+                                android:orientation="horizontal"
+                                android:paddingLeft="3dp"
+                                android:paddingRight="3dp"></LinearLayout>
+
+                        </LinearLayout>
+                    </FrameLayout>
+                </android.support.constraint.ConstraintLayout>
+
+                <include layout="@layout/discovery_recommend" />
+
+            </LinearLayout>
+
+
+        </ScrollView>
+    <!--
+    </android.support.v4.widget.SwipeRefreshLayout>
+    -->
+</FrameLayout>
