@@ -27,6 +27,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     private int lastSelectIndex;
     private View lastSelectedView;
     private ChildBill selectedchildBill;
+    private View defaultSelectedView;
 
     public CategoryAdapter(Context mContext, List<Category> categoryList, ChildBill childBill) {
         this.mCategoryList = categoryList;
@@ -47,13 +48,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         viewHolder.textView.setText(category.getDescription());
         Glide.with(mContext).load(category.getImagePath()).into(viewHolder.imageView);
 
-        if(selectedchildBill!=null) {
-            Log.d(TAG, "onBindViewHolder selectedchildBill: "+selectedchildBill.getCategoryCode()+"--"+category.getCode());
-            if (category.getCode().equals(selectedchildBill.getCategoryCode())){
-                Log.d(TAG, "onBindViewHolder selectedchildBill: "+selectedchildBill.getCategoryCode()+"--"+category.getCode());
-                viewHolder.textView.setText("1222222222");
+        if (selectedchildBill != null) {
+            if (category.getDescription().equals(selectedchildBill.getCategoryDesc())) {
+                Log.d(TAG, "onBindViewHolder selectedchildBill: " + selectedchildBill.getCategoryCode() + "--" + category.getCode());
+//                viewHolder.imageView.setBackgroundResource(R.drawable.category_bg_checked);
             }
+//            defaultSelectedView = viewHolder.imageView;
+//            Log.d(TAG, "onBindViewHolder: defaultSelectedView : " + defaultSelectedView);
         }
+
         viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,6 +64,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
                     //setSelected 是与 xml中相对应的
                     lastSelectedView.setSelected(false);
                 }
+//                if (defaultSelectedView != null) {
+//                    Log.d(TAG, "onBindViewHolder: defaultSelectedView 1 : " + defaultSelectedView);
+//                    defaultSelectedView.setBackgroundResource(R.drawable.category_bg_unchecked);
+//                }
                 lastSelectIndex = i;
                 v.setSelected(true);
                 lastSelectedView = v;
