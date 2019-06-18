@@ -281,7 +281,6 @@ public class CreateActivity extends AppCompatActivity {
                             Intent intent = getIntent();
                             ChildBill childBill = (ChildBill) intent.getSerializableExtra("bill");
                             clickCategoryBtn(outcomeCategoryList, "out", preTxtBtn, createHeaderOutcome, childBill);
-                            Log.d(TAG, "onCreate: childBill" + childBill.getCategoryDesc());
                             if (null != childBill) {
                                 //显示图标
 

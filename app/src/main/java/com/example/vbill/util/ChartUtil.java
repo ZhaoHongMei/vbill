@@ -145,8 +145,8 @@ public class ChartUtil {
     public static void generatePieChart(List<Point> points, PieChartView pieChart) {
         int size = points == null ? 0 : points.size();
         List<SliceValue> values = new ArrayList<SliceValue>();
-        for (int i = 0; i < size; ++i) {
-            SliceValue sliceValue = new SliceValue(points.get(i).getValue(), ChartUtils.nextColor());
+        for (int i = 0; i < size; i++) {
+            SliceValue sliceValue = new SliceValue(points.get(i).getValue(), ChartUtils.COLORS[i+2]);
             sliceValue.setLabel(points.get(i).getName());
             values.add(sliceValue);
         }
