@@ -59,8 +59,8 @@ public class ParentBillRecyclerAdapter extends RecyclerView.Adapter<ParentBillRe
             recyclerView = (RecyclerView)itemView.findViewById(R.id.child_bill);
             RecyclerView.LayoutManager manager = new LinearLayoutManager(itemView.getContext());
             HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
-            stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION,10);//top间距
-            stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION,10);//底部间距
+            stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION,30);//top间距
+            stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION,30);//底部间距
             recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
             recyclerView.setLayoutManager(manager);
         }

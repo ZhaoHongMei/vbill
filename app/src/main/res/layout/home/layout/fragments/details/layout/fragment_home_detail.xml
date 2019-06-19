@@ -23,19 +23,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp">
+                    <LinearLayout
+                        android:id="@+id/month_picker_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true">
+
+                        <TextView
+                            android:id="@+id/month_picker"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textColor="@color/white" />
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:layout_marginLeft="5dp"
+                            android:src="@drawable/select"
+                            android:layout_gravity="center_vertical" />
+                    </LinearLayout>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="04/2019"
+                        android:text="@string/home_detail_import"
+                        android:layout_alignParentRight="true"
                         android:background="@color/colorPrimary"
                         android:textSize="16sp"
-                        android:textColor="@color/white"
-                        android:layout_alignParentLeft="true"/>
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:src="@drawable/search"
-                        android:layout_alignParentRight="true"/>
+                        android:textColor="@color/white"/>
                 </RelativeLayout>
                 <!--收支-->
                 <LinearLayout

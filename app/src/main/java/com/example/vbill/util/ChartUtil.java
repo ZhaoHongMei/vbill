@@ -146,7 +146,7 @@ public class ChartUtil {
         int size = points == null ? 0 : points.size();
         List<SliceValue> values = new ArrayList<SliceValue>();
         for (int i = 0; i < size; i++) {
-            SliceValue sliceValue = new SliceValue(points.get(i).getValue(), ChartUtils.COLORS[i+2]);
+            SliceValue sliceValue = new SliceValue(points.get(i).getValue(), ChartUtils.COLORS[i]);
             sliceValue.setLabel(points.get(i).getName());
             values.add(sliceValue);
         }

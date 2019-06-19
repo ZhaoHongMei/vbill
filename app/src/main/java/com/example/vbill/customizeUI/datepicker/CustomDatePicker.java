@@ -167,6 +167,7 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
         switch (view.getId()) {
             case R.id.dpv_year:
                 mSelectedTime.set(Calendar.YEAR, timeUnit);
+                //滚动改变年份的时候，刷新这一年相应的月份
                 linkageMonthUnit(true, LINKAGE_DELAY_DEFAULT);
                 break;
 

@@ -23,6 +23,7 @@ import com.example.vbill.adapter.ParentBillRecyclerAdapter;
 import com.example.vbill.bean.ParentBill;
 import com.example.vbill.customizeUI.RecyclerViewSpacesItemDecoration;
 import com.example.vbill.customizeUI.datepicker.CustomDatePicker;
+import com.example.vbill.customizeUI.datepicker.CustomMonthPicker;
 import com.example.vbill.customizeUI.datepicker.DateFormatUtils;
 import com.example.vbill.util.Constants;
 import com.example.vbill.util.HttpUtil;
@@ -51,10 +52,13 @@ public class HomeDetailFragment extends Fragment {
     private List<ParentBill> listParent = new ArrayList<ParentBill>();
     private RecyclerView recyclerParent;
     private ImageButton imageButton;
-    private TextView homeDetailIncome, homeDetailOutcome, homeDetailBalance;
+    private TextView homeDetailIncome, homeDetailOutcome, homeDetailBalance,monthPicker;
     private SharedPreferences loginPref;
     private FragmentActivity activity;
     private String customerId;
+    private CustomMonthPicker mMonthPicker;
+    private View monthPickerLayout;
+    private CustomMonthPicker.Callback changeMonthCallback;
 
     public HomeDetailFragment() {
         // Required empty public constructor
@@ -92,16 +96,26 @@ public class HomeDetailFragment extends Fragment {
         homeDetailIncome = view.findViewById(R.id.home_detail_income);
         homeDetailOutcome = view.findViewById(R.id.home_detail_outcome);
         homeDetailBalance = view.findViewById(R.id.home_detail_balance);
+        monthPickerLayout = view.findViewById(R.id.month_picker_layout);
+        monthPicker = view.findViewById(R.id.month_picker);
         activity = getActivity();
         loginPref = activity.getSharedPreferences("login", activity.MODE_PRIVATE);
         customerId = String.valueOf(loginPref.getInt("userId", -1));
-
+        //
+        initDatePicker();
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent("android.intent.action.Create");
                 intent.putExtra("position", String.valueOf(1));
                 startActivity(intent);
+            }
+        });
+        //选择时间获取对应月份的数据
+        monthPickerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMonthPicker.show(monthPicker.getText().toString());
             }
         });
         return view;
@@ -158,7 +172,8 @@ public class HomeDetailFragment extends Fragment {
 
     private void queryDataFromServer() {
         Log.d(TAG, "queryDataFromServer: ");
-        String address = Constants.SERVER_PREFIX + "v1/esc/itemsByCustomerId?customerId=" + customerId;
+//        String address = Constants.SERVER_PREFIX + "v1/esc/itemsByCustomerId?customerId=" + customerId;
+        String address = Constants.SERVER_PREFIX + "v1/esc/" + customerId + "/itemsByMonth?date="+monthPicker.getText();
         HttpUtil.sendOkHttpGetRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -195,6 +210,7 @@ public class HomeDetailFragment extends Fragment {
     }
 
     public void dealWithResData(String response) throws JSONException {
+        listParent.clear();
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
         Map tempMap = gson.fromJson(jsonObject.get("data"), new TypeToken<Map>() {
@@ -233,5 +249,61 @@ public class HomeDetailFragment extends Fragment {
         homeDetailIncome.setText(income);
         homeDetailOutcome.setText(outcome);
         homeDetailBalance.setText(balance);
+    }
+
+    private void initDatePicker() {
+        long beginTimestamp = DateFormatUtils.str2Long("2009-05", 1);
+        long endTimestamp = System.currentTimeMillis();
+
+        monthPicker.setText(DateFormatUtils.long2Str(endTimestamp, 1));
+
+        // 通过时间戳初始化日期，毫秒级别
+        mMonthPicker = new CustomMonthPicker(getContext(), new CustomMonthPicker.Callback() {
+            //选定时间的回调方法的实现
+            @Override
+            public void onTimeSelected(long timestamp) {
+                monthPicker.setText(DateFormatUtils.long2Str(timestamp, 1));
+                //选定时间进行http请求
+                String address = Constants.SERVER_PREFIX + "v1/esc/" + customerId + "/itemsByMonth?date=" + monthPicker.getText();
+                HttpUtil.sendOkHttpGetRequest(address, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String responseData = response.body().string();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Gson gson = new Gson();
+                                JsonObject jsonObject = gson.fromJson(responseData, JsonObject.class);
+                                String statusCode = gson.fromJson(jsonObject.get("statusCode"), new TypeToken<String>() {
+                                }.getType());
+                                if (responseData != null && "200".equals(statusCode)) {
+                                    try {
+                                        dealWithResData(responseData);
+                                        dealWithAdapter();
+                                        dealWithTextView(responseData);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    Toast.makeText(getActivity(), "获取清单失败", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                        Log.d(TAG, "onResponse: " + responseData);
+                    }
+                });
+            }
+        }, beginTimestamp, endTimestamp);
+        // 不允许点击屏幕或物理返回键关闭
+        mMonthPicker.setCancelable(false);
+        // 不允许循环滚动
+        mMonthPicker.setScrollLoop(false);
+        // 不允许滚动动画
+        mMonthPicker.setCanShowAnim(false);
     }
 }

@@ -51,7 +51,7 @@
         <LinearLayout
             android:id="@+id/create_body"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="200dp"
             android:visibility="gone"
             android:background="@color/lightGrey"
             android:orientation="vertical">
@@ -108,10 +108,10 @@
                 </LinearLayout>
                 <!--时间的控件-->
                 <!--<DatePicker-->
-                    <!--android:id="@+id/create_body_time"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:calendarViewShown="false">-->
+                <!--android:id="@+id/create_body_time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:calendarViewShown="false">-->
                 <!--</DatePicker>-->
                 <TextView
                     android:id="@+id/create_body_time"
@@ -127,38 +127,38 @@
             </LinearLayout>
 
             <!--3备注-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="10dp">
-                <!---->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/chart_1"
-                        android:gravity="center"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/create_body_comment"
-                        android:gravity="center_vertical" />
-                </LinearLayout>
-                <!---->
-                <EditText
-                    android:id="@+id/create_body_comment"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:lines="1"
-                    android:ellipsize="end"
-                    android:textColor="@color/colorPrimary"
-                    android:paddingLeft="20dp" />
-            </LinearLayout>
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:padding="10dp">-->
+            <!--&lt;!&ndash;&ndash;&gt;-->
+            <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center">-->
+            <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/chart_1"-->
+            <!--android:gravity="center"/>-->
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:text="@string/create_body_comment"-->
+            <!--android:gravity="center_vertical" />-->
+            <!--</LinearLayout>-->
+            <!--&lt;!&ndash;&ndash;&gt;-->
+            <!--<EditText-->
+            <!--android:id="@+id/create_body_comment"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:lines="1"-->
+            <!--android:ellipsize="end"-->
+            <!--android:textColor="@color/colorPrimary"-->
+            <!--android:paddingLeft="20dp" />-->
+            <!--</LinearLayout>-->
 
             <!--4完成和取消-->
             <LinearLayout

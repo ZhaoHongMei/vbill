@@ -23,6 +23,10 @@ public class DateFormatUtils {
     public static String long2Str(long timestamp, boolean isPreciseTime) {
         return long2Str(timestamp, getFormatPattern(isPreciseTime));
     }
+    //年月
+    public static String long2Str(long timestamp, int showOption) {
+        return long2Str(timestamp, getFormatPattern(showOption));
+    }
 
     private static String long2Str(long timestamp, String pattern) {
         return new SimpleDateFormat(pattern, Locale.CHINA).format(new Date(timestamp));
@@ -38,7 +42,10 @@ public class DateFormatUtils {
     public static long str2Long(String dateStr,boolean isPreciseTime) {
         return str2Long(dateStr, getFormatPattern(isPreciseTime));
     }
-
+    //年月
+    public static long str2Long(String dateStr,int showOption) {
+        return str2Long(dateStr, getFormatPattern(showOption));
+    }
     private static long str2Long(String dateStr, String pattern) {
         try {
             return new SimpleDateFormat(pattern, Locale.CHINA).parse(dateStr).getTime();
@@ -54,11 +61,14 @@ public class DateFormatUtils {
             return DATE_FORMAT_PATTERN_YMD;
         }
     }
-//    private static String getFormatPattern(boolean showSpecificTime) {
-//        if (showSpecificTime) {
-//            return DATE_FORMAT_PATTERN_YM;
-//        } else {
-//            return DATE_FORMAT_PATTERN_YMD;
-//        }
-//    }
+    //只显示年月
+    private static String getFormatPattern(int showOption) {
+        if (showOption == 3) {
+            return DATE_FORMAT_PATTERN_YMD_HM;
+        } else  if(showOption == 2){
+            return DATE_FORMAT_PATTERN_YMD;
+        }else{
+            return DATE_FORMAT_PATTERN_YM;
+        }
+    }
 }

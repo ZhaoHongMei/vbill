@@ -54,7 +54,7 @@ public class CreateActivity extends AppCompatActivity {
     private int month;
     private int day;
     public Gson gson;
-    private TextView createHeaderIncome, createHeaderOutcome, createTime;
+    private TextView createHeaderIncome, createHeaderOutcome, createTime,preCategoryTexBtn;
     private SharedPreferences sharedPreferences;
     private CategorySummaryEntity categorySummaryEntity;
     private RecyclerView categorySummary;
@@ -68,6 +68,7 @@ public class CreateActivity extends AppCompatActivity {
 
     private SharedPreferences loginPref;
     private String customerId;
+    private ChildBill childBill;
 
 
     private static Category selectCategory;
@@ -104,13 +105,18 @@ public class CreateActivity extends AppCompatActivity {
         createBodyView = findViewById(R.id.create_body);
         createCancelBtn = findViewById(R.id.create_cancel_btn);
         createDoneBtn = findViewById(R.id.create_done_btn);
-        createComment = findViewById(R.id.create_body_comment);
-        createComment.setLines(1);
+        //createComment = findViewById(R.id.create_body_comment);
+        //createComment.setLines(1);
         createTime = findViewById(R.id.create_body_time);
         createTime.setInputType(EditorInfo.TYPE_CLASS_DATETIME);
         createAmount = findViewById(R.id.create_body_amount);
         createAmount.setInputType(EditorInfo.TYPE_CLASS_PHONE);
         createAmount.setLines(1);
+
+        //获取intent的参数，判断是更改还是创建
+        Intent intent = getIntent();
+        childBill = (ChildBill) intent.getSerializableExtra("bill");
+        Log.d(TAG, "onCreate: childBill" + childBill);
 
         initDatePicker();
 
@@ -150,17 +156,16 @@ public class CreateActivity extends AppCompatActivity {
         createHeaderIncome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<TextView> preTxtBtn = new ArrayList<>();
-                preTxtBtn.add(createHeaderOutcome);
-                clickCategoryBtn(incomeCategoryList, "in", preTxtBtn, createHeaderIncome,null);
+                if(preCategoryTexBtn != v){
+                    clickCategoryBtn(incomeCategoryList, "in", createHeaderOutcome, (TextView) v,null);
+                }
             }
         });
         createHeaderOutcome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<TextView> preTxtBtn = new ArrayList<>();
-                preTxtBtn.add(createHeaderIncome);
-                clickCategoryBtn(outcomeCategoryList, "out", preTxtBtn, createHeaderOutcome,null);
+                if(preCategoryTexBtn != v){
+                    clickCategoryBtn(outcomeCategoryList, "out", createHeaderIncome, (TextView) v,null);}
             }
         });
         //取消和完成的事件
@@ -177,27 +182,29 @@ public class CreateActivity extends AppCompatActivity {
         createDoneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Map newChildMap = new HashMap<String,String>();
                 Category selectCategoryItem = getSelectCategory();
                 String createTimeText = String.valueOf(createTime.getText());
-                String createCommentText = String.valueOf(createComment.getText());
+                //String createCommentText = String.valueOf(createComment.getText());
                 String createAmountText = String.valueOf(createAmount.getText());
-                Map newChildMap = new HashMap<String, String>();
-                newChildMap.put("createDay", createTimeText.replace("-", "/"));
-                Log.d(TAG, "onClick: createTimeText" + createTimeText);
-                newChildMap.put("createTime", "12:10:12");
-                newChildMap.put("imagePath", selectCategoryItem.getImagePath());
-                newChildMap.put("categoryCode", selectCategoryItem.getCode());
-                newChildMap.put("categoryDesc", selectCategoryItem.getDescription());
-                newChildMap.put("type", selectCategoryItem.getType());
-                newChildMap.put("amount", createAmountText);
-
+                newChildMap.put("createDay",createTimeText.replace("-","/"));
+                newChildMap.put("createTime","12:10:12");
+                newChildMap.put("imagePath",selectCategoryItem.getImagePath());
+                newChildMap.put("categoryCode",selectCategoryItem.getCode());
+                newChildMap.put("categoryDesc",selectCategoryItem.getDescription());
+                newChildMap.put("type",selectCategoryItem.getType());
+                newChildMap.put("amount",createAmountText);
+                if(null != childBill){
+                    newChildMap.put("itemId",childBill.getItemId());
+                }
+                //将requestjson化。
                 String newChildMapJson = gson.toJson(newChildMap);
-//                ChildBill newChildBill = new ChildBill(newChildMap);
 
                 Log.d(TAG, "onClick: newChildBill" + String.valueOf(newChildMapJson));
                 //发送http请求，去添加一笔账单
                 String address = Constants.SERVER_PREFIX + "v1/esc/" + customerId + "/account";
-                if (!(createTimeText.equals("")) && !(createCommentText.equals("")) && !(createAmountText.equals(""))) {
+//                if (!(createTimeText.equals("")) && !(createCommentText.equals("")) && !(createAmountText.equals(""))) {
+                if (!(createTimeText.equals("")) && !(createAmountText.equals(""))) {
                     HttpUtil.sendOkHttpPostRequest(newChildMapJson, address, new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
@@ -226,14 +233,14 @@ public class CreateActivity extends AppCompatActivity {
                     Intent homeFragmentIntent = new Intent(CreateActivity.this, HomeActivity.class);
                     startActivity(homeFragmentIntent);
                 } else {
-                    if (createCommentText.equals("")) {
-                        Toast.makeText(CreateActivity.this, "请输入评论", Toast.LENGTH_SHORT).show();
-                    } else if (createTimeText.equals("")) {
-                        Toast.makeText(CreateActivity.this, "请输入时间", Toast.LENGTH_SHORT).show();
-                    } else if (createAmountText.equals("")) {
+//                    if (createCommentText.equals("")) {
+//                        Toast.makeText(CreateActivity.this, "请输入评论", Toast.LENGTH_SHORT).show();
+//                    } else
+                    if (createAmountText.equals("")) {
                         Toast.makeText(CreateActivity.this, "请输入金额", Toast.LENGTH_SHORT).show();
+                    }else if (createTimeText.equals("")) {
+                        Toast.makeText(CreateActivity.this, "请输入时间", Toast.LENGTH_SHORT).show();
                     }
-
                 }
             }
         });
@@ -273,20 +280,21 @@ public class CreateActivity extends AppCompatActivity {
                                 editor.putString("categorysummary", String.valueOf(responseJsonDate.get("data")));
                                 editor.apply();
                             }
-                            List<TextView> preTxtBtn = new ArrayList<>();
-                            preTxtBtn.add(createHeaderIncome);
-                            clickCategoryBtn(outcomeCategoryList, "out", preTxtBtn, createHeaderOutcome, null);
+                            clickCategoryBtn(outcomeCategoryList, "out", createHeaderIncome, createHeaderOutcome, null);
 
                             //获取intent的参数，判断是更改还是创建
-                            Intent intent = getIntent();
-                            ChildBill childBill = (ChildBill) intent.getSerializableExtra("bill");
-                            clickCategoryBtn(outcomeCategoryList, "out", preTxtBtn, createHeaderOutcome, childBill);
-                            if (null != childBill) {
+                            if(null != childBill){
                                 //显示图标
 
                                 //显示页面数据
-                                createAmount.setText(childBill.getAmount());
-                                createTime.setText(childBill.getCreateDay().replace("/", "-"));
+                                createTime.setText(childBill.getCreateDay().replace("/","-"));
+                                if("in".equals(childBill.getType())){
+                                    clickCategoryBtn(incomeCategoryList,"in",createHeaderOutcome,createHeaderIncome,null);
+                                    createAmount.setText(childBill.getAmount());
+                                }else{
+                                    clickCategoryBtn(outcomeCategoryList,"out",createHeaderIncome,createHeaderOutcome,null);
+                                    createAmount.setText(childBill.getAmount().replace("-",""));
+                                }
                                 showCreateBodyView();
                             }
 
@@ -318,14 +326,12 @@ public class CreateActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ResourceAsColor")
-    public void clickCategoryBtn(List<Category> categoryList, String type, List<TextView> preTextBtnList, TextView thisTexBtn, ChildBill childBill) {
+    public void clickCategoryBtn(List<Category> categoryList, String type, TextView preTextBtn, TextView thisTexBtn, ChildBill childBill) {
         Resources resources = this.getResources();
         //恢复其他的背景颜色
         Drawable uncheckedDrawable = resources.getDrawable(R.drawable.income_unchecked_bg);
-        for (int i = 0; i < preTextBtnList.size(); i++) {
-            preTextBtnList.get(i).setBackgroundDrawable(uncheckedDrawable);
-            preTextBtnList.get(i).setTextColor(R.color.colorPrimary);
-        }
+        preTextBtn.setBackgroundDrawable(uncheckedDrawable);
+        preTextBtn.setTextColor(R.color.colorPrimary);
         //改变背景颜色
         Drawable checkedDrawable = resources.getDrawable(R.drawable.income_checked_bg);
         thisTexBtn.setBackgroundDrawable(checkedDrawable);
@@ -337,7 +343,7 @@ public class CreateActivity extends AppCompatActivity {
         //渲染数据
         categoryList = getInOrOutCategory(categorySummaryEntity, type);
         setCategoryAdapter(categoryList, childBill);
-
+        this.preCategoryTexBtn = thisTexBtn;
     }
 
     //显示隐藏页下脚的createBodyView
