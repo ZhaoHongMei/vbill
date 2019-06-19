@@ -75,6 +75,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private Bitmap bitmap;
     private ImageView photoView;
     private String imagHttpPath;
+    private EditText confirmPasswordView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,6 +86,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         chooseFromAlbumButton = (FloatingActionButton) view.findViewById(R.id.choose_from_album);
         usernameView = view.findViewById(R.id.register_username);
         passwordView = view.findViewById(R.id.register_password);
+        confirmPasswordView = view.findViewById(R.id.register_confirm_password);
         registerButton = view.findViewById(R.id.register_button);
         loginView = view.findViewById(R.id.login_text);
         progressBar = view.findViewById(R.id.register_progress);
@@ -128,6 +130,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.register_button:
+                if(!confirmPassword()){
+                    break;
+                }
                 if (photoFile != null) {
                     saveImageAndGoToRegister(photoFile);
                 } else {
@@ -250,6 +255,18 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             photoView.setVisibility(View.VISIBLE);
         } else {
             Toast.makeText(activity, "failed to get image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean confirmPassword() {
+        String password = passwordView.getText().toString();
+        String confirmPassword = confirmPasswordView.getText().toString();
+        if (password != null && password.equals(confirmPassword)) {
+            return true;
+        } else {
+            confirmPasswordView.setError("密码不一致，请重新输入");
+            confirmPasswordView.setText("");
+            return false;
         }
     }
 

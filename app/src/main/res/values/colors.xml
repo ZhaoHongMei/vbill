@@ -6,6 +6,7 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="grey">#666666</color>
+    <color name="mediumGrey">#aaaaaa</color>
     <color name="lightGrey">#F1F1F1</color>
     <color name="date_picker_bg">#FFFFFF</color>
     <color name="date_picker_divider">#11112233</color>

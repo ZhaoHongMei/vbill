@@ -1,5 +1,6 @@
 package com.example.vbill.adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,7 +69,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
         DateItem dateItem = mDateItemList.get(position);
         holder.dateNameView.setText(dateItem.getDateName());
 
-        if(position==mInitDateNumber-1){
+        if (position == mInitDateNumber - 1) {
             holder.dateUnderLineView.setVisibility(View.VISIBLE);
         }
         viewHolderMap.put(position, holder);
