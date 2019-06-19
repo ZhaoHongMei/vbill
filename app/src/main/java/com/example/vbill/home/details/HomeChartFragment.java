@@ -15,10 +15,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -27,11 +31,14 @@ import com.example.vbill.R;
 import com.example.vbill.adapter.DateAdapter;
 import com.example.vbill.adapter.HomeChartSpinnerAdapter;
 import com.example.vbill.bean.DateItem;
+import com.example.vbill.bean.Point;
+import com.example.vbill.customizeUI.HorizontalChartView;
 import com.example.vbill.util.ChartUtil;
 import com.example.vbill.util.Constants;
 import com.example.vbill.util.DateUtil;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -81,8 +88,12 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
     private String accountType;
     private String customerId;
     private LinearLayoutManager linearLayoutManager;
-    private View spinnerSelectedView;
-
+    //    private View spinnerSelectedView;
+    private LinearLayout selectedItemLayout;
+    private ImageView selectedImageView;
+    private TextView selectedTextView;
+    private PopupWindow popWindow;
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,7 +107,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
         dateNumber = pref.getInt(Constants.WEEK_DATE_NUMBER, DateUtil.getCurrentWeek());
         accountType = pref.getString("accountType", Constants.ACCOUNT_OUT);
 
-        View view = inflater.inflate(R.layout.fragment_home_chart, container, false);
+        view = inflater.inflate(R.layout.fragment_home_chart, container, false);
         weekView = view.findViewById(R.id.week);
         monthView = view.findViewById(R.id.month);
         yearView = view.findViewById(R.id.year);
@@ -106,12 +117,17 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
         dateRecyclerView = view.findViewById(R.id.date_recycler_view);
         lineChart = (LineChartView) view.findViewById(R.id.all_analysis_line);
         pieChart = (PieChartView) view.findViewById(R.id.customer_pie_show);
+        selectedItemLayout = view.findViewById(R.id.selected_item_layout);
+        selectedImageView = view.findViewById(R.id.selected_image);
+        selectedTextView = view.findViewById(R.id.selected_text);
         customerId = String.valueOf(loginPref.getInt("userId", -1));
 
         weekView.setOnClickListener(this);
         monthView.setOnClickListener(this);
         yearView.setOnClickListener(this);
+        selectedItemLayout.setOnClickListener(this);
 
+        initSelectedItem();
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         dateRecyclerView.setLayoutManager(linearLayoutManager);
@@ -123,53 +139,85 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
         //自动滚动到最后一个Item
 //            linearLayoutManager.setStackFromEnd(linearLayoutManager.findLastVisibleItemPosition() - linearLayoutManager.findFirstVisibleItemPosition() < dateAdapter.getItemCount() - 1);
 
-        incomePaymentSpinner = view.findViewById(R.id.income_payment_spinner);
-        //data : List<Map<String,Object>>
-        List<Map<String, Object>> listMaps = HomeChartSpinnerAdapter.getListMaps();
-        SimpleAdapter simpleAdapter = new SimpleAdapter(this.getContext(), listMaps, R.layout.chart_spinner_item, new String[]{"logo", "itemName"}, new int[]{R.id.spinner_image, R.id.spinner_text});
-        incomePaymentSpinner.setAdapter(simpleAdapter);
-        incomePaymentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemSelected: " + view);
-                if (view == null) {
-                    Log.d(TAG, "onItemSelected: getChildAt "+view);
-                }
-                Map selectItem = (Map) incomePaymentSpinner.getItemAtPosition(position);
-                if (view != null) {
-                    imageView = view.findViewById(R.id.spinner_image);
-                    textView = view.findViewById(R.id.spinner_text);
-                    if ("收入".equals(selectItem.get("itemName"))) {
-                        accountType = Constants.ACCOUNT_IN;
-                        editor.putString("accountType", Constants.ACCOUNT_IN);
-                        generateCharts();
-                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.income));
-                        totalSummaryLabelView.setText(R.string.total_summary_in);
-                    } else {
-                        accountType = Constants.ACCOUNT_OUT;
-                        editor.putString("accountType", Constants.ACCOUNT_OUT);
-                        generateCharts();
-                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.outcome));
-                        totalSummaryLabelView.setText(R.string.total_summary_out);
-                    }
-                    editor.apply();
-                    textView.setTextColor(Color.WHITE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
+//        incomePaymentSpinner = view.findViewById(R.id.income_payment_spinner);
+//        //data : List<Map<String,Object>>
+//        List<Map<String, Object>> listMaps = HomeChartSpinnerAdapter.getListMaps();
+//        SimpleAdapter simpleAdapter = new SimpleAdapter(this.getContext(), listMaps, R.layout.chart_spinner_item, new String[]{"logo", "itemName"}, new int[]{R.id.spinner_image, R.id.spinner_text});
+//        incomePaymentSpinner.setAdapter(simpleAdapter);
+//        incomePaymentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                Log.d(TAG, "onItemSelected: " + view);
+//                if (view == null) {
+//                    Log.d(TAG, "onItemSelected: getChildAt "+view);
+//                }
+//                Map selectItem = (Map) incomePaymentSpinner.getItemAtPosition(position);
+//                if (view != null) {
+//                    imageView = view.findViewById(R.id.spinner_image);
+//                    textView = view.findViewById(R.id.spinner_text);
+//                    if ("收入".equals(selectItem.get("itemName"))) {
+//                        accountType = Constants.ACCOUNT_IN;
+//                        editor.putString("accountType", Constants.ACCOUNT_IN);
+//                        generateCharts();
+//                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.income));
+//                        totalSummaryLabelView.setText(R.string.total_summary_in);
+//                    } else {
+//                        accountType = Constants.ACCOUNT_OUT;
+//                        editor.putString("accountType", Constants.ACCOUNT_OUT);
+//                        generateCharts();
+//                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.outcome));
+//                        totalSummaryLabelView.setText(R.string.total_summary_out);
+//                    }
+//                    editor.apply();
+//                    textView.setTextColor(Color.WHITE);
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
         changeDateType(dateType);
         return view;
     }
 
-    private void initView() {
-
+    private void initPopWindow(View v) {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.account_popup, null, false);
+        LinearLayout incomeLayout = view.findViewById(R.id.income_layout);
+        LinearLayout outcomeLayout = view.findViewById(R.id.outcome_layout);
+        incomeLayout.setOnClickListener(this);
+        outcomeLayout.setOnClickListener(this);
+        popWindow = new PopupWindow(view,
+                v.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        popWindow.setAnimationStyle(R.style.pop_anim);
+        popWindow.setTouchable(true);
+        popWindow.setTouchInterceptor(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+                // 这里如果返回true的话，touch事件将被拦截
+                // 拦截后 PopupWindow的onTouchEvent不被调用，这样点击外部区域无法dismiss
+            }
+        });
+        popWindow.setBackgroundDrawable(new ColorDrawable(0xffffffff));
+        popWindow.showAsDropDown(v, 0, 2);
     }
+
+    private void initSelectedItem() {
+        String accountType = pref.getString("accountType", Constants.ACCOUNT_IN);
+        Log.d(TAG, "initSelectedItem: " + accountType);
+        if (Constants.ACCOUNT_IN.equals(accountType)) {
+            totalSummaryLabelView.setText(R.string.total_summary_in);
+            selectedTextView.setText(R.string.create_header_income);
+            selectedImageView.setImageDrawable(getResources().getDrawable(R.drawable.income));
+        } else {
+            totalSummaryLabelView.setText(R.string.total_summary_out);
+            selectedTextView.setText(R.string.create_header_outcome);
+            selectedImageView.setImageDrawable(getResources().getDrawable(R.drawable.outcome));
+        }
+    }
+
 
     @Override
     public void onResume() {
@@ -187,6 +235,29 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
                 break;
             case R.id.year:
                 changeDateType(Constants.DATE_TYPE_YEAR);
+                break;
+            case R.id.income_layout:
+                accountType = Constants.ACCOUNT_IN;
+                editor.putString("accountType", Constants.ACCOUNT_IN);
+                generateCharts();
+                selectedImageView.setImageDrawable(getResources().getDrawable(R.drawable.income));
+                selectedTextView.setText(R.string.create_header_income);
+                totalSummaryLabelView.setText(R.string.total_summary_in);
+                editor.apply();
+                popWindow.dismiss();
+                break;
+            case R.id.outcome_layout:
+                accountType = Constants.ACCOUNT_OUT;
+                editor.putString("accountType", Constants.ACCOUNT_OUT);
+                generateCharts();
+                selectedImageView.setImageDrawable(getResources().getDrawable(R.drawable.outcome));
+                selectedTextView.setText(R.string.create_header_outcome);
+                totalSummaryLabelView.setText(R.string.total_summary_out);
+                editor.apply();
+                popWindow.dismiss();
+                break;
+            case R.id.selected_item_layout:
+                initPopWindow(v);
                 break;
             default:
                 break;
@@ -236,7 +307,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
     }
 
     private void generateCharts() {
-        ChartUtil.generateCharts(dateType, dateNumber, customerId, accountType, this, lineChart, pieChart, noDataView, totalSummaryValueView);
+        ChartUtil.generateCharts(view, dateType, dateNumber, customerId, accountType, this, lineChart, pieChart, noDataView, totalSummaryValueView);
     }
 
     public void generateCharts(int dateNumber) {
@@ -252,7 +323,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
             dateRecyclerView.smoothScrollToPosition(dateNumber - 2);
         }
         defaultRecyclerViewUnderLine(dateNumber);
-        ChartUtil.generateCharts(dateType, dateNumber, customerId, accountType, this, lineChart, pieChart, noDataView, totalSummaryValueView);
+        ChartUtil.generateCharts(view, dateType, dateNumber, customerId, accountType, this, lineChart, pieChart, noDataView, totalSummaryValueView);
     }
 
     private void refreshRecyclerView(int dateType, int dateNumber) {

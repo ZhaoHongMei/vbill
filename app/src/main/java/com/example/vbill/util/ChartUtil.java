@@ -3,11 +3,15 @@ package com.example.vbill.util;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.vbill.R;
 import com.example.vbill.bean.ChartVO;
 import com.example.vbill.bean.Point;
+import com.example.vbill.customizeUI.HorizontalChartView;
+import com.example.vbill.home.HomeActivity;
 import com.example.vbill.home.details.HomeChartFragment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -35,15 +39,17 @@ import okhttp3.Response;
 public class ChartUtil {
     private static final String TAG = "ChartUtil";
 
-    public static void generateCharts(int dateType,
-                                      int dateNumber,
-                                      String customerId,
-                                      String accountType,
-                                      HomeChartFragment homeChartFragment,
-                                      LineChartView lineChart,
-                                      PieChartView pieChart,
-                                      TextView noDataView,
-                                      TextView totalSummaryValueView) {
+    public static void generateCharts(
+            View view,
+            int dateType,
+            int dateNumber,
+            String customerId,
+            String accountType,
+            HomeChartFragment homeChartFragment,
+            LineChartView lineChart,
+            PieChartView pieChart,
+            TextView noDataView,
+            TextView totalSummaryValueView) {
 
         Map dateMap = DateUtil.getDateMap();
         String url = Constants.SERVER_PREFIX + "v1/esc/chartItems?customerId=" + customerId + "&number=" + dateNumber + "&accountType=" + accountType + "&dateType=" + dateMap.get(dateType);
@@ -70,6 +76,7 @@ public class ChartUtil {
 
                         List<Point> linePoints = chartVo.getLinePoints();
                         List<Point> piePoints = chartVo.getPiePoints();
+                        List<Point> columnPoints = chartVo.getColumnPoints();
                         String totalAmount = chartVo.getTotalAmount();
                         if (piePoints != null && piePoints.size() > 0) {
                             lineChart.setVisibility(View.VISIBLE);
@@ -77,6 +84,14 @@ public class ChartUtil {
                             noDataView.setVisibility(View.GONE);
                             generateLineChart(linePoints, lineChart);
                             generatePieChart(piePoints, pieChart);
+                            HorizontalChartView columnChart = (HorizontalChartView) view.findViewById(R.id.ranking_list);
+                            LinearLayout rankingLayout = view.findViewById(R.id.ranking_layout);
+//                            List<Point> barList = ChartUtil.generateMockPiePoints();
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, columnPoints.size() * 76 + 10);
+                            columnChart.setLayoutParams(params);
+                            columnChart.setPointList(columnPoints);
+                            rankingLayout.setVisibility(View.VISIBLE);
+                            Log.d(TAG, "run: " + piePoints);
                             totalSummaryValueView.setText(totalAmount);
                         } else {
                             lineChart.setVisibility(View.GONE);
@@ -146,14 +161,21 @@ public class ChartUtil {
         int size = points == null ? 0 : points.size();
         List<SliceValue> values = new ArrayList<SliceValue>();
         for (int i = 0; i < size; i++) {
-            SliceValue sliceValue = new SliceValue(points.get(i).getValue(), ChartUtils.COLORS[i+2]);
-            sliceValue.setLabel(points.get(i).getName());
+            SliceValue sliceValue = new SliceValue(points.get(i).getValue(), ChartUtils.COLORS[i]);
+            sliceValue.setLabel(points.get(i).getName() + ":" + points.get(i).getValue());
             values.add(sliceValue);
         }
         PieChartData pieData = new PieChartData(values);
         pieData.setHasLabels(true);
         pieChart.setPieChartData(pieData);
 
+    }
+
+    /*
+     * 绘制柱状图的方法
+     * */
+    public static void generateColumnChart(List<Point> points, HorizontalChartView columnChart) {
+        columnChart.setPointList(points);
     }
 
     public static List<Point> generateMockLinePoints() {
