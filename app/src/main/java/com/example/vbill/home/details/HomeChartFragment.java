@@ -66,6 +66,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
     public FragmentActivity activity;
     public SharedPreferences.Editor editor;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private LinearLayout dateLayout;
 
 
     ImageView imageView;
@@ -120,6 +121,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
         selectedItemLayout = view.findViewById(R.id.selected_item_layout);
         selectedImageView = view.findViewById(R.id.selected_image);
         selectedTextView = view.findViewById(R.id.selected_text);
+        dateLayout = view.findViewById(R.id.date_layout);
         customerId = String.valueOf(loginPref.getInt("userId", -1));
 
         weekView.setOnClickListener(this);
@@ -189,7 +191,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
         incomeLayout.setOnClickListener(this);
         outcomeLayout.setOnClickListener(this);
         popWindow = new PopupWindow(view,
-                v.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, true);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         popWindow.setAnimationStyle(R.style.pop_anim);
         popWindow.setTouchable(true);
         popWindow.setTouchInterceptor(new View.OnTouchListener() {
@@ -201,7 +203,7 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
             }
         });
         popWindow.setBackgroundDrawable(new ColorDrawable(0xffffffff));
-        popWindow.showAsDropDown(v, 0, 2);
+        popWindow.showAsDropDown(dateLayout, 0, 2);
     }
 
     private void initSelectedItem() {
