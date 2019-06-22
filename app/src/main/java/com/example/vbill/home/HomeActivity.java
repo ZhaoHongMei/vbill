@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -46,6 +47,7 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
     private Fragment homeLoginFragment;
     private boolean login = false;
     private List<Map<String, Object>> listMaps;
+    private long mExitTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,27 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
             return false;
         }
     };
+    //对返回键进行监听
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+
+            exit();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void exit() {
+        if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            Toast.makeText(this, "再按一次退出微账单", Toast.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis();
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
 
     private void initFragment() {
 //        homeDetailFragment= HomeDetailFragment.getInstance();
