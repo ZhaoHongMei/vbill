@@ -89,7 +89,7 @@ public class ChartUtil {
                         LinearLayout rankingLayout = view.findViewById(R.id.ranking_layout);
                         if (piePoints != null && piePoints.size() > 0) {
                             lineChart.setVisibility(View.VISIBLE);
-                            pieChart.setVisibility(View.VISIBLE);
+                            pieChart.setVisibility(View.GONE);
                             noDataView.setVisibility(View.GONE);
                             generateLineChart(linePoints, lineChart);
                             generatePieChart(piePoints, pieChart);

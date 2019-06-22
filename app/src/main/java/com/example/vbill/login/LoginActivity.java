@@ -1,5 +1,7 @@
 package com.example.vbill.login;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +16,7 @@ import com.example.vbill.R;
 import com.example.vbill.login.details.LoginOptionFragment;
 import com.example.vbill.login.details.LoginUsePhoneFragment;
 import com.example.vbill.util.Constants;
+import com.example.vbill.util.Utility;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -39,6 +42,7 @@ public class LoginActivity extends AppCompatActivity{
         if(actionBar != null){
             actionBar.hide();
         }
+        Utility.fullScreen(this);
         //注册appid到微信
         registerToWechat();
         initFragment();
