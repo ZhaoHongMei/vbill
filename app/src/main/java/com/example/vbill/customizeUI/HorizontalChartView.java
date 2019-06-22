@@ -109,15 +109,22 @@ public class HorizontalChartView extends View {
         if (isInEditMode()) {
             return;
         }
+        if (pointList == null) {
+            return;
+        }
         for (int i = 0; i < pointList.size(); i++) {
+            if (i % 2 == 0) {
+                barPaint.setColor(getResources().getColor(R.color.colorPrimary));
+            } else {
+                barPaint.setColor(getResources().getColor(R.color.lightPrimary));
+            }
             barRect.left = itemNameWidth;
             barRect.top = barSpace * (i + 1) + barWidth * i;
-            barRect.right = (int) ((lineViewWidth-5) * (pointList.get(i).getValue() / maxValue)+5) + itemNameWidth;
+            barRect.right = (int) ((lineViewWidth - 5) * (pointList.get(i).getValue() / maxValue) + 5) + itemNameWidth;
             barRect.bottom = barRect.top + barWidth;
-            barPaint.setColor(getResources().getColor(R.color.colorPrimary));
 
-            canvas.drawRoundRect(barRect,20,20, barPaint);
-            canvas.drawText(pointList.get(i).getValue() + "", barRect.right+20, barRect.bottom - (barWidth - amountTextHeight), textPaint);
+            canvas.drawRoundRect(barRect, 20, 20, barPaint);
+            canvas.drawText(pointList.get(i).getValue() + "", barRect.right + 20, barRect.bottom - (barWidth - amountTextHeight), textPaint);
             canvas.drawText(pointList.get(i).getName(), itemNameWidth - betweenMargin - textPaint.measureText(pointList.get(i).getName()), barRect.bottom - (barWidth - amountTextHeight), textPaint);
 //            canvas.drawText(String.valueOf(amountAdd * (i + 1)), itemNameWidth + amountWidth * (i + 1) - textPaint.measureText(String.valueOf(amountAdd * (i + 1))) / 2, barSpace, textPaint);
         }

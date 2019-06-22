@@ -39,30 +39,28 @@ import com.example.vbill.util.Constants;
 import com.example.vbill.util.HttpUtil;
 import com.example.vbill.util.ImageUtil;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 
-public class RegisterFragment extends Fragment implements View.OnClickListener {
+public class RegisterFragment extends Fragment implements View.OnClickListener, View.OnFocusChangeListener {
     private static final String TAG = "RegisterFragment";
     private static RegisterFragment fragment;
     private FloatingActionButton takePhotoButton;
     private FloatingActionButton chooseFromAlbumButton;
     private AutoCompleteTextView usernameView;
     private EditText passwordView;
+    private EditText confirmPasswordView;
+    private AutoCompleteTextView verifyCodeView;
+    private AutoCompleteTextView telephoneNumberView;
     private Button registerButton;
     private TextView loginView;
     private ProgressBar progressBar;
@@ -75,7 +73,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private Bitmap bitmap;
     private ImageView photoView;
     private String imagHttpPath;
-    private EditText confirmPasswordView;
+    private Button getVerifyCodeButton;
+    private boolean isTelephoneNumberExists;
+    private boolean isUserNameExists;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,14 +91,20 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         registerButton = view.findViewById(R.id.register_button);
         loginView = view.findViewById(R.id.login_text);
         progressBar = view.findViewById(R.id.register_progress);
+        getVerifyCodeButton = view.findViewById(R.id.get_verification_code);
+        verifyCodeView = view.findViewById(R.id.verification_code_text);
+        telephoneNumberView = view.findViewById(R.id.telephone_number);
         activity = getActivity();
         gson = new Gson();
         pref = activity.getSharedPreferences("login", activity.MODE_PRIVATE);
         editor = pref.edit();
+        getVerifyCodeButton.setOnClickListener(this);
         takePhotoButton.setOnClickListener(this);
         chooseFromAlbumButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
         loginView.setOnClickListener(this);
+        usernameView.setOnFocusChangeListener(this);
+        telephoneNumberView.setOnFocusChangeListener(this);
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             android.support.v4.app.ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.CHOOSE_FROM_ALBUM);
@@ -107,6 +114,97 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         }
 
         return view;
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        switch (v.getId()) {
+            case R.id.telephone_number:
+
+                if (!hasFocus) {
+                    String telephoneNumber = telephoneNumberView.getText().toString();
+                    if (!isTelephoneNumberValid(telephoneNumber)) {
+                        break;
+                    }
+
+                    try {
+                        checkIfPhoneNumerExists(telephoneNumber);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                break;
+            case R.id.register_username:
+                if (!hasFocus) {
+                    String username = usernameView.getText().toString();
+                    if (!isUserNameValid(username)) {
+                        break;
+                    }
+                    String url = Constants.USER_SERVER_PREFIX + "v1/esc/users/name/" + username;
+                    HttpUtil.sendOkHttpGetRequest(url, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String responseData = response.body().string();
+                            Log.d(TAG, "checkUsername,onResponse: " + responseData);
+
+                            JsonObject jsonObject = gson.fromJson(responseData, JsonObject.class);
+                            JsonElement data = jsonObject.get("data");
+                            if (data.isJsonObject()) {
+                                isUserNameExists = data.getAsJsonObject().get("isUsernameExists").getAsBoolean();
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (isUserNameExists) {
+                                            usernameView.setError("该用户名已存在");
+                                            Toast.makeText(getContext(), "该用户名已存在", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void checkIfPhoneNumerExists(String telephoneNumber) throws IOException {
+        String url = Constants.USER_SERVER_PREFIX + "v1/esc/users/telephoneNumber/" + telephoneNumber;
+        HttpUtil.sendOkHttpGetRequest(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "checkTelephoneNumber,onResponse: " + responseData);
+
+                JsonObject jsonObject = gson.fromJson(responseData, JsonObject.class);
+                JsonElement data = jsonObject.get("data");
+                if (data.isJsonObject()) {
+                    isTelephoneNumberExists = data.getAsJsonObject().get("isTelephoneNumberExists").getAsBoolean();
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isTelephoneNumberExists) {
+                                telephoneNumberView.setError("该手机号已经注册,直接登录");
+                                Toast.makeText(getContext(), "该手机号已经注册，直接登录", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
@@ -130,7 +228,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.register_button:
-                if(!confirmPassword()){
+                if (!confirmPassword()) {
                     break;
                 }
                 if (photoFile != null) {
@@ -142,9 +240,41 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             case R.id.login_text:
                 goToLogin();
                 break;
+            case R.id.get_verification_code:
+                sendVerificationCode();
+                break;
             default:
                 break;
         }
+    }
+
+    private void sendVerificationCode() {
+        String telephoneNumber = telephoneNumberView.getText().toString();
+        if (!isTelephoneNumberValid(telephoneNumber) || isTelephoneNumberExists) {
+            telephoneNumberView.requestFocus();
+            return;
+        }
+        String url = Constants.USER_SERVER_PREFIX + "v1/esc/sendVerficationCode/" + telephoneNumber;
+        HttpUtil.sendOkHttpGetRequest(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "对不起，发送验证码失败，请稍后重试！", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseDate = response.body().string();
+                JsonObject jsonObject = gson.fromJson(responseDate, JsonObject.class);
+                if (jsonObject != null && "操作成功".equals(jsonObject.get("reason")) && "0".equals(jsonObject.get("error_code"))) {
+                    Toast.makeText(getContext(), "发送成功，请检查短信。", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void takePhoto() {
@@ -302,13 +432,16 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private void goToRegister() {
         usernameView.setError(null);
         passwordView.setError(null);
+        telephoneNumberView.setError(null);
 
         String username = usernameView.getText().toString();
         String password = passwordView.getText().toString();
+        String telephoneNumber = telephoneNumberView.getText().toString();
         String photopath = imagHttpPath;
-        if (isUserNameValid(username) && isPasswordValid(password)) {
+        if (isUserNameValid(username) && isPasswordValid(password) && isTelephoneNumberValid(telephoneNumber) && !isUserNameExists && !isTelephoneNumberExists) {
             progressBar.setVisibility(View.VISIBLE);
-            saveUserToServer(username, password, photopath);
+            User user = new User(telephoneNumber, username, password, photopath);
+            saveUserToServer(user);
         }
     }
 
@@ -319,15 +452,12 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 .commit();
     }
 
-    private void saveUserToServer(String username, String password, String photopath) {
-        Map<String, String> map = new HashMap<String, String>();
-        Log.d(TAG, "saveUserToServer: username " + username);
-        map.put("name", username);
-        map.put("password", password);
-        map.put("photopath", photopath);
-        String userJson = gson.toJson(map);
+    private void saveUserToServer(User user) {
+        Log.d(TAG, "saveUserToServer: user " + user);
+        String userJson = gson.toJson(user);
+        String verificationCode = verifyCodeView.getText().toString();
         //String url = Constants.USER_SERVER_PREFIX + "v1/esc/register";
-        String url = Constants.USER_SERVER_PREFIX + "v1/esc/register";
+        String url = Constants.USER_SERVER_PREFIX + "v1/esc/register/" + verificationCode;
         HttpUtil.sendOkHttpPostRequest(userJson, url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -345,8 +475,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 Log.d(TAG, "onResponse: " + responseData);
-                User user = gson.fromJson(responseData, User.class);
-                if (user != null) {
+                com.example.vbill.bean.Response resp = gson.fromJson(responseData, com.example.vbill.bean.Response.class);
+                if (resp == null) {
+                    return;
+                }
+                if (resp.getData() != null) {
                     storeDataToSharedPreference(user);
                     activity.runOnUiThread(new Runnable() {
                         @Override
@@ -357,11 +490,16 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                         }
                     });
                 } else {
+                    String errorMsg = resp.getErrorMsg();
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(getActivity(), "用户名或密码不正确！", Toast.LENGTH_SHORT).show();
+                            if (errorMsg == null || !"".equals(errorMsg)) {
+                                verifyCodeView.setError(errorMsg);
+                            } else {
+                                Toast.makeText(getContext(), "注册失败", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 }
@@ -380,6 +518,14 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private boolean isUserNameValid(String username) {
         if (TextUtils.isEmpty(username)) {
             usernameView.setError("username should not be empty!");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isTelephoneNumberValid(String telephoneNumber) {
+        if (!telephoneNumber.matches("[0-9]{11}")) {
+            telephoneNumberView.setError("手机号无效");
             return false;
         }
         return true;
