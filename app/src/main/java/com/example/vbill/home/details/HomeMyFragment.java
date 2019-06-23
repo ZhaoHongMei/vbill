@@ -1,12 +1,23 @@
 package com.example.vbill.home.details;
 
+import android.Manifest;
+import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,12 +37,16 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.vbill.R;
 import com.example.vbill.util.Constants;
 import com.example.vbill.util.HttpUtil;
+import com.example.vbill.util.PlatformUtil;
+import com.example.vbill.util.ShareToolUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
@@ -57,12 +73,13 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
 
     private LinearLayout homeMylogin;
     private ImageView userPhoto;
-    private TextView loginText,billDay,billCount;
+    private TextView loginText, billDay, billCount;
     private Button logOutLayout;
     private LinearLayout changeUserLayout;
     private LinearLayout generalLogoutLayout;
     private String customerId;
     private SharedPreferences loginPref;
+    private LinearLayout shareLayout;
 
     public HomeMyFragment() {
         // Required empty public constructor
@@ -110,11 +127,13 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         generalLogoutLayout = homeMyView.findViewById(R.id.general_logout_layout);
         billDay = homeMyView.findViewById(R.id.bill_day);
         billCount = homeMyView.findViewById(R.id.bill_count);
+        shareLayout = homeMyView.findViewById(R.id.share_layout);
         homeMylogin.setOnClickListener(this);
         userPhoto.setOnClickListener(this);
         logOutLayout.setOnClickListener(this);
         changeUserLayout.setOnClickListener(this);
-        loginPref = getActivity().getSharedPreferences("login",getActivity().MODE_PRIVATE);
+        shareLayout.setOnClickListener(this);
+        loginPref = getActivity().getSharedPreferences("login", getActivity().MODE_PRIVATE);
         customerId = String.valueOf(loginPref.getInt("userId", -1));
 
         return homeMyView;
@@ -219,11 +238,75 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 Intent intent = new Intent("android.intent.action.Login");
                 startActivity(intent);
                 break;
+            case R.id.share_layout:
+                Log.d(TAG, "onClick: share_layout");
+                //Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.phone1);
+                //File file = ShareToolUtil.saveSharePic(getContext(), thumb);
+                //Log.d(TAG, "onClick: file " + file);
+                shareImageDefault(copyToFolder());
+                break;
             default:
                 break;
         }
     }
 
+    private File copyToFolder(){
+        return ShareToolUtil.saveSharePic(getActivity(),BitmapFactory.decodeResource(getResources(), R.drawable.qr_code_title));
+    }
+    protected File shotWindowScreen() {
+        // 获取屏幕
+
+        View dView = getActivity().getWindow().getDecorView();
+
+
+
+
+        dView.setDrawingCacheEnabled(true);
+        dView.buildDrawingCache();
+        Bitmap bmp = dView.getDrawingCache();
+        if (bmp != null) {
+            try {
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    android.support.v4.app.ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.CHOOSE_FROM_ALBUM);
+                } else {
+                    // 获取内置SD卡路径
+                    String sdCardPath = Environment.getExternalStorageDirectory().getPath() + "/DCIM/Screenshots";
+                    // 图片文件路径
+                    String imagePath = sdCardPath + File.separator + "screenshot.png";
+                    File file = new File(imagePath);
+                    File parentFile = file.getParentFile();
+                    if (!parentFile.exists()) {
+                        parentFile.mkdirs();
+                    }
+                    FileOutputStream os = new FileOutputStream(file);
+                    bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
+                    os.flush();
+                    os.close();
+                    return file;
+                }
+            } catch (Exception e) {
+                Log.d(TAG, "getscreenshot: file " + e.getMessage());
+            }
+        }
+        return null;
+    }
+
+
+    protected void shareImageDefault(File file) {
+
+        Log.d(TAG, "shareImage: file " + file);
+        if (file != null && file.exists()) {
+            Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
+            intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(getActivity(), "com.example.vbill.fileprovider", file));// 分享的内容
+
+            intent.setType("image/*");// 分享发送的数据类型
+            Intent chooser = Intent.createChooser(intent, "Share image");
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                Log.d(TAG, "shareImage: ");
+                startActivity(chooser);
+            }
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -242,7 +325,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         mListener = null;
     }
 
-    public void getBillDayAndCount(){
+    public void getBillDayAndCount() {
         String address = Constants.SERVER_PREFIX + "v1/esc/" + customerId + "/totalCounts";
         HttpUtil.sendOkHttpGetRequest(address, new Callback() {
             @Override
@@ -262,8 +345,8 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                         Log.d(TAG, "onResponse: " + responseData);
                         if (responseData != null && "200".equals(statusCode)) {
                             JsonObject dataJson = gson.fromJson(jsonObject.get("data"), JsonObject.class);
-                            billDay.setText((String.valueOf(dataJson.get("totalDay")))+"天");
-                            billCount.setText(String.valueOf(dataJson.get("totalAccountsCount"))+"笔");
+                            billDay.setText((String.valueOf(dataJson.get("totalDay"))) + "天");
+                            billCount.setText(String.valueOf(dataJson.get("totalAccountsCount")) + "笔");
                         } else {
                             Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
                         }
@@ -272,6 +355,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

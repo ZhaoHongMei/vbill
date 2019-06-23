@@ -356,12 +356,12 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
         }
         return true;
     }
-
     private void checkIfUserExisted(String username, String password) {
         Map<String, String> map = new HashMap<String, String>();
         map.put("username", username);
         map.put("password", password);
         String userJson = gson.toJson(map);
+        Log.d(TAG, "checkIfUserExisted: usename: "+username+"password: "+password);
         String url = Constants.USER_SERVER_PREFIX + "v1/esc/login";
 
         HttpUtil.sendOkHttpPostRequest(userJson, url, new Callback() {
