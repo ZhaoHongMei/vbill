@@ -18,17 +18,20 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@color/colorPrimary">
-                <!--时间-->
-                <RelativeLayout
+                <!--header-->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:orientation="horizontal">
+                    <!--时间-->
                     <LinearLayout
                         android:id="@+id/month_picker_layout"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true">
-
+                        android:layout_weight="1"
+                        android:layout_marginLeft="15dp">
                         <TextView
                             android:id="@+id/month_picker"
                             android:layout_width="wrap_content"
@@ -46,22 +49,37 @@
                     </LinearLayout>
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_detail_title"
+                        android:textSize="20sp"
+                        android:textColor="@color/white"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal" />
+
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/home_detail_import"
-                        android:layout_alignParentRight="true"
                         android:background="@color/colorPrimary"
                         android:textSize="16sp"
-                        android:textColor="@color/white"/>
-                </RelativeLayout>
+                        android:textColor="@color/white"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:layout_marginRight="15dp"/>
+
+                </LinearLayout>
                 <!--收支-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="50dp">
                     <!--结余-->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:gravity="center">
@@ -78,56 +96,46 @@
                             android:textColor="@color/white"
                             android:textSize="18sp"/>
                     </LinearLayout>
-
-                    <!--收入支出-->
+                    <!--收入-->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp">
-                        <!--收入-->
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_weight="1"
-                            android:gravity="center">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/home_detail_income"
-                                android:textColor="@color/white"
-                                android:textSize="14sp"/>
-                            <TextView
-                                android:id="@+id/home_detail_income"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:textSize="18sp"/>
-                        </LinearLayout>
-                        <!--支出-->
-                        <LinearLayout
-                            android:layout_width="0dp"
+                            android:text="@string/home_detail_income"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"/>
+                        <TextView
+                            android:id="@+id/home_detail_income"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/home_detail_outcome"
-                                android:textColor="@color/white"
-                                android:textSize="14sp"/>
-                            <TextView
-                                android:id="@+id/home_detail_outcome"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:textSize="18sp"/>
-                        </LinearLayout>
+                            android:textColor="@color/white"
+                            android:textSize="18sp"/>
                     </LinearLayout>
-
+                    <!--支出-->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_detail_outcome"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"/>
+                        <TextView
+                            android:id="@+id/home_detail_outcome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"/>
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
@@ -141,8 +149,26 @@
                 android:layout_marginTop="-30dp"
                 android:layout_gravity="center" />
         </LinearLayout>
-        <!--RecyclerView Or Login-->
+        <!--没有数据-->
+        <LinearLayout
+            android:id="@+id/none_bill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:paddingTop="10dp"
+            android:visibility="gone">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/nobill"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home_detail_nonebill"/>
+        </LinearLayout>
 
+        <!--RecyclerView Or Login-->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/parent_bill"
             android:layout_width="match_parent"

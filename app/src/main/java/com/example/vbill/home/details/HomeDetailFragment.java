@@ -57,7 +57,7 @@ public class HomeDetailFragment extends Fragment {
     private FragmentActivity activity;
     private String customerId;
     private CustomMonthPicker mMonthPicker;
-    private View monthPickerLayout;
+    private View monthPickerLayout,noneBill;
     private CustomMonthPicker.Callback changeMonthCallback;
 
     public HomeDetailFragment() {
@@ -98,6 +98,7 @@ public class HomeDetailFragment extends Fragment {
         homeDetailBalance = view.findViewById(R.id.home_detail_balance);
         monthPickerLayout = view.findViewById(R.id.month_picker_layout);
         monthPicker = view.findViewById(R.id.month_picker);
+        noneBill = view.findViewById(R.id.none_bill);
         activity = getActivity();
         loginPref = activity.getSharedPreferences("login", activity.MODE_PRIVATE);
         customerId = String.valueOf(loginPref.getInt("userId", -1));
@@ -153,6 +154,7 @@ public class HomeDetailFragment extends Fragment {
         if (listParent != null) {
             listParent.clear();
         }
+        noneBill.setVisibility(View.GONE);
     }
 
     /**
@@ -173,7 +175,7 @@ public class HomeDetailFragment extends Fragment {
     private void queryDataFromServer() {
         Log.d(TAG, "queryDataFromServer: ");
 //        String address = Constants.SERVER_PREFIX + "v1/esc/itemsByCustomerId?customerId=" + customerId;
-        String address = Constants.SERVER_PREFIX + "v1/esc/" + customerId + "/itemsByMonth?date="+monthPicker.getText();
+        String address = Constants.SERVER_PREFIX + "v1/esc/" + customerId + "/itemsByMonth?date="+ monthPicker.getText();
         HttpUtil.sendOkHttpGetRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -195,6 +197,10 @@ public class HomeDetailFragment extends Fragment {
                                 dealWithResData(responseData);
                                 dealWithAdapter();
                                 dealWithTextView(responseData);
+                                if(listParent.size()==0){
+                                    noneBill.setVisibility(View.VISIBLE);
+//                                    Toast.makeText(getActivity(), "您还没有账单赶快记一笔吧", Toast.LENGTH_SHORT).show();
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
