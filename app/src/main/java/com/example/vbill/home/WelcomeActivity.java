@@ -13,7 +13,7 @@ import com.example.vbill.R;
 import com.example.vbill.util.Utility;
 
 public class WelcomeActivity extends AppCompatActivity {
-    private final int time = 1800;
+    private final int time = 3000;
     private boolean lag = true;
 
     @Override

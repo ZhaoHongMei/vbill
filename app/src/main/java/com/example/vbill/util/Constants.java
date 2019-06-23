@@ -10,6 +10,7 @@ public class Constants {
     public static final String APP_ID = "wxd477edab60670232";
 
     public static final String SERVER_PREFIX = "http://47.102.197.196:1201/";
+    public static final String LOCAL_SERVER_PREFIX = "http://192.168.1.103:1201/";
 
     public static final int DATE_TYPE_WEEK = 1;
     public static final int DATE_TYPE_MONTH = 2;

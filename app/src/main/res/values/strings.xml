@@ -75,6 +75,12 @@
     <string name="no_data">您还没有该时间段内该类型的记账哦！</string>
     <string name="total_summary_in">总收入: </string>
     <string name="total_summary_out">总支出: </string>
+    <string name="max_out">消费最高单: </string>
+    <string name="min_out">消费最低单: </string>
+    <string name="out_level_analysis">消费水平分析</string>
+    <string name="max_in">收入最高单: </string>
+    <string name="min_in">收入最低单: </string>
+    <string name="in_level_analysis">收入水平分析</string>
 
 
     <string name="title_activity_investment">InvestmentActivity</string>

@@ -7,6 +7,8 @@ public class ChartVO {
 	private List<Point> linePoints;
 	private List<Point> piePoints;
 	private List<Point> columnPoints;
+	private Account max;
+	private Account min;
 
 	public ChartVO() {
 	}
@@ -16,6 +18,15 @@ public class ChartVO {
 		this.linePoints = linePoints;
 		this.piePoints = piePoints;
 		this.columnPoints = columnPoints;
+	}
+
+	public ChartVO(String totalAmount, List<Point> linePoints, List<Point> piePoints, List<Point> columnPoints, Account max, Account min) {
+		this.totalAmount = totalAmount;
+		this.linePoints = linePoints;
+		this.piePoints = piePoints;
+		this.columnPoints = columnPoints;
+		this.max = max;
+		this.min = min;
 	}
 
 	public String getTotalAmount() {
@@ -48,5 +59,21 @@ public class ChartVO {
 
 	public void setColumnPoints(List<Point> columnPoints) {
 		this.columnPoints = columnPoints;
+	}
+
+	public Account getMax() {
+		return max;
+	}
+
+	public void setMax(Account max) {
+		this.max = max;
+	}
+
+	public Account getMin() {
+		return min;
+	}
+
+	public void setMin(Account min) {
+		this.min = min;
 	}
 }

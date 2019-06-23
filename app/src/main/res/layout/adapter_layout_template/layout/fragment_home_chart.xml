@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".home.details.HomeChartFragment">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,8 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:orientation="horizontal"
-                android:padding="2dp"
-                >
+                android:padding="2dp">
 
                 <ImageView
                     android:id="@+id/selected_image"
@@ -50,10 +48,11 @@
                     android:text="@string/create_header_income"
                     android:textColor="@color/white"
                     android:textSize="16dp" />
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/lower_triangular"/>
+                    android:src="@drawable/lower_triangular" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -126,17 +125,17 @@
                     android:id="@+id/total_summary_label"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textSize="16sp"
-                    android:text="总支出:" />
+                    android:text="总支出:"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/total_summary_value"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textSize="22sp"
                     android:fontFamily="sans-serif-medium"
+                    android:text="5552.52"
                     android:textColor="@color/black"
-                    android:text="5552.52" />
+                    android:textSize="22sp" />
             </LinearLayout>
             <!--图表-->
             <ScrollView
@@ -165,52 +164,119 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="30dp"
                         android:paddingVertical="20dp" />
+
                     <LinearLayout
                         android:id="@+id/ranking_layout"
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp">
+                        android:layout_marginBottom="20dp"
+                        android:orientation="vertical">
+
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginBottom="5dp"
                             android:background="@color/mediumGrey" />
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:textSize="16sp"
-                            android:fontFamily="sans-serif-condensed"
                             android:layout_marginBottom="10dp"
-                            android:text="排行榜"/>
+                            android:fontFamily="sans-serif-condensed"
+                            android:gravity="center"
+                            android:text="排行榜"
+                            android:textSize="16sp" />
+
                         <com.example.vbill.customizeUI.HorizontalChartView
                             android:id="@+id/ranking_list"
                             android:layout_width="match_parent"
-                            android:layout_height="310dp"/>
+                            android:layout_height="310dp" />
                     </LinearLayout>
-                    <!--<View-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="1dp"-->
-                        <!--android:layout_marginBottom="5dp"-->
-                        <!--android:background="@color/mediumGrey" />-->
-                    <!--<TextView-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:gravity="center"-->
-                        <!--android:textSize="16sp"-->
-                        <!--android:fontFamily="sans-serif-condensed"-->
-                        <!--android:layout_marginBottom="10dp"-->
-                        <!--android:text="消费类别前五名"/>-->
 
-                    <lecho.lib.hellocharts.view.PieChartView
-                        android:id="@+id/customer_pie_show"
-                        android:layout_width="250dp"
-                        android:layout_height="250dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="15dp"
-                        android:visibility="gone"/>
+                    <LinearLayout
+                        android:id="@+id/pieChart_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@color/mediumGrey" />
+
+                        <TextView
+                            android:id="@+id/level_analysis"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="sans-serif-condensed"
+                            android:gravity="center"
+                            android:text="@string/out_level_analysis"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:id="@+id/max_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/max_out" />
+
+                            <ImageView
+                                android:id="@+id/max_image"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginHorizontal="10dp" />
+
+                            <TextView
+                                android:id="@+id/max_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:id="@+id/min_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/min_out" />
+
+                            <ImageView
+                                android:id="@+id/min_image"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginHorizontal="10dp" />
+
+                            <TextView
+                                android:id="@+id/min_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                        <com.example.vbill.customizeUI.ItemColumnView
+                            android:id="@+id/pie_item_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"/>
+
+                        <lecho.lib.hellocharts.view.PieChartView
+                            android:id="@+id/customer_pie_show"
+                            android:layout_width="250dp"
+                            android:layout_height="250dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="15dp" />
+                    </LinearLayout>
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>

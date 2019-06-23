@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -95,6 +96,9 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
     private TextView selectedTextView;
     private PopupWindow popWindow;
     private View view;
+    private TextView levelAnalysis;
+    private TextView maxText;
+    private TextView minText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,6 +126,9 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
         selectedImageView = view.findViewById(R.id.selected_image);
         selectedTextView = view.findViewById(R.id.selected_text);
         dateLayout = view.findViewById(R.id.date_layout);
+        levelAnalysis = view.findViewById(R.id.level_analysis);
+        maxText = view.findViewById(R.id.max_text);
+        minText = view.findViewById(R.id.min_text);
         customerId = String.valueOf(loginPref.getInt("userId", -1));
 
         weekView.setOnClickListener(this);
@@ -213,10 +220,16 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
             totalSummaryLabelView.setText(R.string.total_summary_in);
             selectedTextView.setText(R.string.create_header_income);
             selectedImageView.setImageDrawable(getResources().getDrawable(R.drawable.income));
+            levelAnalysis.setText(R.string.in_level_analysis);
+            minText.setText(R.string.min_in);
+            maxText.setText(R.string.max_in);
         } else {
             totalSummaryLabelView.setText(R.string.total_summary_out);
             selectedTextView.setText(R.string.create_header_outcome);
             selectedImageView.setImageDrawable(getResources().getDrawable(R.drawable.outcome));
+            levelAnalysis.setText(R.string.out_level_analysis);
+            minText.setText(R.string.min_out);
+            maxText.setText(R.string.max_out);
         }
     }
 
@@ -247,6 +260,9 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
                 totalSummaryLabelView.setText(R.string.total_summary_in);
                 editor.apply();
                 popWindow.dismiss();
+                levelAnalysis.setText(R.string.in_level_analysis);
+                minText.setText(R.string.min_in);
+                maxText.setText(R.string.max_in);
                 break;
             case R.id.outcome_layout:
                 accountType = Constants.ACCOUNT_OUT;
@@ -257,6 +273,9 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
                 totalSummaryLabelView.setText(R.string.total_summary_out);
                 editor.apply();
                 popWindow.dismiss();
+                levelAnalysis.setText(R.string.out_level_analysis);
+                minText.setText(R.string.min_out);
+                maxText.setText(R.string.max_out);
                 break;
             case R.id.selected_item_layout:
                 initPopWindow(v);
@@ -265,7 +284,6 @@ public class HomeChartFragment extends Fragment implements View.OnClickListener 
                 break;
         }
     }
-
     private void changeDateType(int mdateType) {
         Log.d(TAG, "changeDateType:dateType " + mdateType);
         TextView view = weekView;

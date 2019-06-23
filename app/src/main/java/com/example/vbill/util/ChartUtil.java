@@ -1,22 +1,32 @@
 package com.example.vbill.util;
 
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.vbill.R;
+import com.example.vbill.bean.Account;
 import com.example.vbill.bean.ChartVO;
 import com.example.vbill.bean.Point;
 import com.example.vbill.customizeUI.HorizontalChartView;
+import com.example.vbill.customizeUI.ItemColumnView;
 import com.example.vbill.home.HomeActivity;
 import com.example.vbill.home.details.HomeChartFragment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +55,7 @@ public class ChartUtil {
     public static final int COLOR_GREEN3 = Color.parseColor("#81beab");
     public static final int COLOR_GREEN4 = Color.parseColor("#bedfd1");
     public static final int COLOR_GREEN5 = Color.parseColor("#cae1cb");
-    public static final int[] COLORS=new int[]{COLOR_GREEN, COLOR_GREEN2, COLOR_GREEN3, COLOR_GREEN4, COLOR_GREEN5};
+    public static final int[] COLORS = new int[]{COLOR_GREEN, COLOR_GREEN2, COLOR_GREEN3, COLOR_GREEN4, COLOR_GREEN5};
 
     public static void generateCharts(
             View view,
@@ -86,25 +96,41 @@ public class ChartUtil {
                         List<Point> piePoints = chartVo.getPiePoints();
                         List<Point> columnPoints = chartVo.getColumnPoints();
                         String totalAmount = chartVo.getTotalAmount();
+                        Account maxAccount = chartVo.getMax();
+                        Account minAccount = chartVo.getMin();
+                        LinearLayout pieChartLayout = view.findViewById(R.id.pieChart_layout);
                         LinearLayout rankingLayout = view.findViewById(R.id.ranking_layout);
                         if (piePoints != null && piePoints.size() > 0) {
                             lineChart.setVisibility(View.VISIBLE);
-                            pieChart.setVisibility(View.GONE);
+                            pieChart.setVisibility(View.VISIBLE);
                             noDataView.setVisibility(View.GONE);
                             generateLineChart(linePoints, lineChart);
+                            ItemColumnView itemColumnView = view.findViewById(R.id.pie_item_list);
+                            drawPieExternalItems(piePoints, itemColumnView);
                             generatePieChart(piePoints, pieChart);
                             HorizontalChartView columnChart = (HorizontalChartView) view.findViewById(R.id.ranking_list);
-//                            List<Point> barList = ChartUtil.generateMockPiePoints();
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, columnPoints.size() * 76 + 10);
                             columnChart.setLayoutParams(params);
                             columnChart.setPointList(columnPoints);
                             rankingLayout.setVisibility(View.VISIBLE);
+                            pieChartLayout.setVisibility(View.VISIBLE);
                             Log.d(TAG, "run: " + piePoints);
                             totalSummaryValueView.setText(totalAmount);
+                            ImageView maxImage = view.findViewById(R.id.max_image);
+                            ImageView minImage = view.findViewById(R.id.min_image);
+                            TextView maxText = view.findViewById(R.id.max_value);
+                            TextView minText = view.findViewById(R.id.min_value);
+                            if (maxAccount != null && minAccount != null) {
+                                Glide.with(homeChartFragment.getContext()).load(maxAccount.getCategory().getImagePath()).into(maxImage);
+                                Glide.with(homeChartFragment.getContext()).load(minAccount.getCategory().getImagePath()).into(minImage);
+                                maxText.setText(maxAccount.getCategory().getDescription() + " : " + maxAccount.getAmount());
+                                minText.setText(minAccount.getCategory().getDescription() + " : " + minAccount.getAmount());
+                            }
                         } else {
                             lineChart.setVisibility(View.GONE);
                             pieChart.setVisibility(View.GONE);
                             noDataView.setVisibility(View.VISIBLE);
+                            pieChartLayout.setVisibility(View.GONE);
                             totalSummaryValueView.setText("0");
                             rankingLayout.setVisibility(View.GONE);
                         }
@@ -164,22 +190,47 @@ public class ChartUtil {
         lineChart.setLineChartData(lineData);
     }
 
+    public static void drawPieExternalItems(List<Point> piePoints, ItemColumnView itemColumnView) {
+        int size = piePoints.size();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, size * 80);
+        itemColumnView.setLayoutParams(params);
+        itemColumnView.setPointList(piePoints);
+    }
+
     /**
      * 绘制饼状图的方法
      */
     public static void generatePieChart(List<Point> points, PieChartView pieChart) {
         int size = points == null ? 0 : points.size();
         List<SliceValue> values = new ArrayList<SliceValue>();
+        List<String> names = new ArrayList<>();
+        double totalValue = 0;
+        for (int i = 0; i < size; i++) {
+            totalValue += points.get(i).getValue();
+        }
+        for (int i = 0; i < size; i++) {
+            double value = points.get(i).getValue();
+            NumberFormat nf = NumberFormat.getNumberInstance();
+            nf.setMaximumFractionDigits(2);
+            Log.d(TAG, "generatePieChart: value: " + value + "totalValue: " + totalValue);
+            String percent = nf.format(value / totalValue * 100) + "%";
+//            points.get(i).setName(percent);
+            names.add(percent);
+        }
+
         for (int i = 0; i < size; i++) {
             SliceValue sliceValue = new SliceValue(points.get(i).getValue(), COLORS[i]);
-            sliceValue.setLabel(points.get(i).getName() + ":" + points.get(i).getValue());
+            sliceValue.setLabel(names.get(i));
             values.add(sliceValue);
         }
         PieChartData pieData = new PieChartData(values);
-        pieData.setHasLabels(true);
+        pieData.setHasLabels(true)
+                .setHasCenterCircle(true)
+                .setCenterCircleColor(Color.WHITE)
+                .setCenterCircleScale(0.4f);
         pieChart.setPieChartData(pieData);
-
     }
+
 
     /*
      * 绘制柱状图的方法
