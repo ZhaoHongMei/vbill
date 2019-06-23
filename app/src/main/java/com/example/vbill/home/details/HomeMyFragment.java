@@ -14,14 +14,29 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.vbill.R;
 import com.example.vbill.util.Constants;
+import com.example.vbill.util.HttpUtil;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 
 /**
@@ -42,10 +57,12 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
 
     private LinearLayout homeMylogin;
     private ImageView userPhoto;
-    private TextView loginText;
-    private LinearLayout logOutLayout;
+    private TextView loginText,billDay,billCount;
+    private Button logOutLayout;
     private LinearLayout changeUserLayout;
     private LinearLayout generalLogoutLayout;
+    private String customerId;
+    private SharedPreferences loginPref;
 
     public HomeMyFragment() {
         // Required empty public constructor
@@ -91,11 +108,14 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         logOutLayout = homeMyView.findViewById(R.id.me_log_out);
         changeUserLayout = homeMyView.findViewById(R.id.me_change_user);
         generalLogoutLayout = homeMyView.findViewById(R.id.general_logout_layout);
-
+        billDay = homeMyView.findViewById(R.id.bill_day);
+        billCount = homeMyView.findViewById(R.id.bill_count);
         homeMylogin.setOnClickListener(this);
         userPhoto.setOnClickListener(this);
         logOutLayout.setOnClickListener(this);
         changeUserLayout.setOnClickListener(this);
+        loginPref = getActivity().getSharedPreferences("login",getActivity().MODE_PRIVATE);
+        customerId = String.valueOf(loginPref.getInt("userId", -1));
 
         return homeMyView;
     }
@@ -140,7 +160,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
             generalLogoutLayout.setVisibility(View.VISIBLE);
             String defaultUserPhoto = Constants.USER_SERVER_PREFIX + "v1/esc/images/defaultUserPhoto.png";
             String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
-
+            getBillDayAndCount();
             //Glide.with(getContext()).load(photoPath).into(userPhoto);
             Glide.with(getContext()).load(photoPath).asBitmap().centerCrop().into(new BitmapImageViewTarget(userPhoto) {
                 @Override
@@ -222,6 +242,36 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         mListener = null;
     }
 
+    public void getBillDayAndCount(){
+        String address = Constants.SERVER_PREFIX + "v1/esc/" + customerId + "/totalCounts";
+        HttpUtil.sendOkHttpGetRequest(address, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Gson gson = new Gson();
+                        JsonObject jsonObject = gson.fromJson(responseData, JsonObject.class);
+                        String statusCode = gson.fromJson(jsonObject.get("statusCode"), String.class);
+                        Log.d(TAG, "onResponse: " + responseData);
+                        if (responseData != null && "200".equals(statusCode)) {
+                            JsonObject dataJson = gson.fromJson(jsonObject.get("data"), JsonObject.class);
+                            billDay.setText((String.valueOf(dataJson.get("totalDay")))+"天");
+                            billCount.setText(String.valueOf(dataJson.get("totalAccountsCount"))+"笔");
+                        } else {
+                            Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
