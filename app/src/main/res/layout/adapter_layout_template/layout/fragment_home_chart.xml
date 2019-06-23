@@ -119,18 +119,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/total_summary_label"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textSize="16sp"
                     android:text="总支出:" />
 
                 <TextView
                     android:id="@+id/total_summary_value"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textSize="22sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/black"
                     android:text="5552.52" />
             </LinearLayout>
             <!--图表-->
@@ -159,34 +164,53 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="30dp"
-                        android:padding="20dp" />
-
-                    <lecho.lib.hellocharts.view.PieChartView
-                        android:id="@+id/customer_pie_show"
-                        android:layout_width="250dp"
-                        android:layout_height="250dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="15dp" />
+                        android:paddingVertical="20dp" />
                     <LinearLayout
                         android:id="@+id/ranking_layout"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone">
+                        android:layout_marginBottom="20dp">
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginBottom="5dp"
                             android:background="@color/mediumGrey" />
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif-condensed"
+                            android:layout_marginBottom="10dp"
                             android:text="排行榜"/>
                         <com.example.vbill.customizeUI.HorizontalChartView
                             android:id="@+id/ranking_list"
                             android:layout_width="match_parent"
                             android:layout_height="310dp"/>
                     </LinearLayout>
+                    <!--<View-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="1dp"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:background="@color/mediumGrey" />-->
+                    <!--<TextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:gravity="center"-->
+                        <!--android:textSize="16sp"-->
+                        <!--android:fontFamily="sans-serif-condensed"-->
+                        <!--android:layout_marginBottom="10dp"-->
+                        <!--android:text="消费类别前五名"/>-->
+
+                    <lecho.lib.hellocharts.view.PieChartView
+                        android:id="@+id/customer_pie_show"
+                        android:layout_width="250dp"
+                        android:layout_height="250dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp"
+                        android:visibility="gone"/>
+
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>

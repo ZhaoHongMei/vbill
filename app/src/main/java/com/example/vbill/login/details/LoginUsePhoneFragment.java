@@ -18,7 +18,9 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +33,7 @@ import com.example.vbill.util.Constants;
 import com.example.vbill.util.HttpUtil;
 import com.example.vbill.util.LoginUtil;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
@@ -47,7 +50,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class LoginUsePhoneFragment extends Fragment implements View.OnClickListener {
+public class LoginUsePhoneFragment extends Fragment implements View.OnClickListener, View.OnFocusChangeListener {
     private static final String TAG = "LoginUsePhoneFragment";
     public static final int LOGIN_SUCCEED = 1;
     public static final int LOGIN_FAILED = 2;
@@ -59,7 +62,11 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
     private TextView passwordView;
     private Button signInButton;
     private CheckBox remeberPass;
+    private AutoCompleteTextView telephoneNumberView;
+    private EditText verificationCodeView;
+    private Button getVerificationCodeButton;
     private TextView registerText;
+    private TextView loginMethodText;
     private ProgressBar progressBar;
     public SharedPreferences pref;
     public SharedPreferences.Editor editor;
@@ -68,6 +75,10 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
     private FragmentActivity activity;
     private ImageView openEyeView;
     private ImageView closeEyeView;
+    private String loginMethod = Constants.LOGIN_METHOD_PHONE;
+    private LinearLayout phoneLoginLayout;
+    private LinearLayout usernameLoginLayout;
+    private boolean isTelephoneNumberExists;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,11 +87,17 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
         usernameView = view.findViewById(R.id.username);
         passwordView = view.findViewById(R.id.password);
         remeberPass = view.findViewById(R.id.remember_pass);
+        telephoneNumberView = view.findViewById(R.id.phone_number);
+        verificationCodeView = view.findViewById(R.id.verification_code);
+        getVerificationCodeButton = view.findViewById(R.id.get_login_verification_code);
         registerText = view.findViewById(R.id.register_text);
+        loginMethodText = view.findViewById(R.id.login_method);
         progressBar = view.findViewById(R.id.login_progress);
         signInButton = view.findViewById(R.id.sign_in_button);
         openEyeView = view.findViewById(R.id.eye_code);
         closeEyeView = view.findViewById(R.id.eye_code_close);
+        phoneLoginLayout = view.findViewById(R.id.phone_login_layout);
+        usernameLoginLayout = view.findViewById(R.id.username_login_layout);
         activity = getActivity();
         pref = activity.getSharedPreferences("login", activity.MODE_PRIVATE);
         editor = pref.edit();
@@ -91,7 +108,9 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
         registerText.setOnClickListener(this);
         openEyeView.setOnClickListener(this);
         closeEyeView.setOnClickListener(this);
-
+        loginMethodText.setOnClickListener(this);
+        getVerificationCodeButton.setOnClickListener(this);
+        telephoneNumberView.setOnFocusChangeListener(this);
         setStoredToViewIfRemember();
         return view;
     }
@@ -115,9 +134,86 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
                 closeEyeView.setVisibility(View.GONE);
                 passwordView.setInputType(129);
                 break;
+            case R.id.login_method:
+                if (Constants.LOGIN_METHOD_PHONE.equals(loginMethod)) {
+                    loginMethodText.setText(R.string.phone_login_method);
+                    loginMethod = Constants.LOGIN_METHOD_USER_NAME;
+                    phoneLoginLayout.setVisibility(View.GONE);
+                    usernameLoginLayout.setVisibility(View.VISIBLE);
+                } else {
+                    loginMethodText.setText(R.string.username_login_method);
+                    loginMethod = Constants.LOGIN_METHOD_PHONE;
+                    phoneLoginLayout.setVisibility(View.VISIBLE);
+                    usernameLoginLayout.setVisibility(View.GONE);
+                }
+                break;
+            case R.id.get_login_verification_code:
+                sendVerificationCode();
+                break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        switch (v.getId()) {
+            case R.id.phone_number:
+                if (!hasFocus) {
+                    String telephoneNumber = telephoneNumberView.getText().toString();
+                    if (!isTelephoneNumberValid(telephoneNumber)) {
+                        break;
+                    }
+                    try {
+                        checkIfPhoneNumerExists(telephoneNumber);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                break;
+        }
+    }
+
+    private void sendVerificationCode() {
+        String telephoneNumber = telephoneNumberView.getText().toString();
+        try {
+            checkIfPhoneNumerExists(telephoneNumber);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        Log.d(TAG, "sendVerificationCode1: "+isTelephoneNumberExists);
+        if (!isTelephoneNumberValid(telephoneNumber) || !isTelephoneNumberExists) {
+            telephoneNumberView.requestFocus();
+            return;
+        }
+        String url = Constants.USER_SERVER_PREFIX + "v1/esc/sendVerficationCode/" + telephoneNumber;
+        Log.d(TAG, "sendVerificationCode: ");
+        HttpUtil.sendOkHttpGetRequest(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "对不起，发送验证码失败，请稍后重试！", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseDate = response.body().string();
+                JsonObject jsonObject = gson.fromJson(responseDate, JsonObject.class);
+                if (jsonObject != null && "操作成功".equals(jsonObject.get("reason")) && "0".equals(jsonObject.get("error_code"))) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(), "发送成功，请检查短信。", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void gotoRegister() {
@@ -128,18 +224,118 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
     }
 
     private void goToSignIn() {
-        usernameView.setError(null);
-        passwordView.setError(null);
+        if (Constants.LOGIN_METHOD_USER_NAME.equals(loginMethod)) {
+            usernameView.setError(null);
+            passwordView.setError(null);
 
-        String username = usernameView.getText().toString();
-        String password = passwordView.getText().toString();
+            String username = usernameView.getText().toString();
+            String password = passwordView.getText().toString();
 
-        if (isUserNameValid(username) && isPasswordValid(password)) {
-            progressBar.setVisibility(View.VISIBLE);
-            editor.putString("username", username);
-            editor.putString("password", password);
-            checkIfUserExisted(username, password);
+            if (isUserNameValid(username) && isPasswordValid(password)) {
+                progressBar.setVisibility(View.VISIBLE);
+                checkIfUserExisted(username, password);
+            }
+        } else {
+            String phoneNumber = telephoneNumberView.getText().toString();
+            String verificationCode = verificationCodeView.getText().toString();
+            if (isTelephoneNumberValid(phoneNumber) && isVerificationCodeValid(verificationCode)) {
+                goToSignInByphoneNumber(phoneNumber, verificationCode);
+            }
         }
+    }
+
+    private void goToSignInByphoneNumber(String phoneNumber, String verificationCode) {
+        String url = Constants.USER_SERVER_PREFIX + "v1/esc/loginByPhone?telephoneNumber=" + phoneNumber + "&verificationCode=" + verificationCode;
+        HttpUtil.sendOkHttpGetRequest(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), "对不起，处理失败，我们会尽快修复。", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "onResponse: " + responseData);
+                com.example.vbill.bean.Response resp = gson.fromJson(responseData, com.example.vbill.bean.Response.class);
+                if (resp == null) {
+                    return;
+                }
+                if (resp.getData() != null) {
+                    User user = gson.fromJson(gson.toJson(resp.getData()), User.class);
+                    storeDataToSharedPreference(user);
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.GONE);
+                            Intent intent = new Intent(getActivity(), HomeActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                } else {
+                    String errorMsg = resp.getErrorMsg();
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.GONE);
+                            if (errorMsg == null || !"".equals(errorMsg)) {
+                                verificationCodeView.setError(errorMsg);
+                            } else {
+                                Toast.makeText(getContext(), "登陆失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    private boolean isTelephoneNumberValid(String telephoneNumber) {
+        if (!telephoneNumber.matches("[0-9]{11}")) {
+            telephoneNumberView.setError("手机号无效");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isVerificationCodeValid(String verificationCode) {
+        if (!verificationCode.matches("[0-9]{4}")) {
+            verificationCodeView.setError("验证码不正确");
+            return false;
+        }
+        return true;
+    }
+
+    private void checkIfPhoneNumerExists(String telephoneNumber) throws IOException {
+        String url = Constants.USER_SERVER_PREFIX + "v1/esc/users/telephoneNumber/" + telephoneNumber;
+        HttpUtil.sendOkHttpGetRequest(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "checkTelephoneNumber,onResponse: " + responseData);
+
+                JsonObject jsonObject = gson.fromJson(responseData, JsonObject.class);
+                JsonElement data = jsonObject.get("data");
+                if (data.isJsonObject()) {
+                    isTelephoneNumberExists = data.getAsJsonObject().get("isTelephoneNumberExists").getAsBoolean();
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!isTelephoneNumberExists) {
+                                telephoneNumberView.setError("该手机号未注册，请先注册");
+                                Toast.makeText(getContext(), "该手机号未注册，请先注册", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private boolean isUserNameValid(String username) {

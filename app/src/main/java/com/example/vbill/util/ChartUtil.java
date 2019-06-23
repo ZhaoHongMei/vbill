@@ -38,6 +38,14 @@ import okhttp3.Response;
 
 public class ChartUtil {
     private static final String TAG = "ChartUtil";
+    public static final int DEFAULT_COLOR = Color.parseColor("#DFDFDF");
+    public static final int DEFAULT_DARKEN_COLOR = Color.parseColor("#DDDDDD");
+    public static final int COLOR_GREEN = Color.parseColor("#018577");
+    public static final int COLOR_GREEN2 = Color.parseColor("#66b29d");
+    public static final int COLOR_GREEN3 = Color.parseColor("#81beab");
+    public static final int COLOR_GREEN4 = Color.parseColor("#bedfd1");
+    public static final int COLOR_GREEN5 = Color.parseColor("#cae1cb");
+    public static final int[] COLORS=new int[]{COLOR_GREEN, COLOR_GREEN2, COLOR_GREEN3, COLOR_GREEN4, COLOR_GREEN5};
 
     public static void generateCharts(
             View view,
@@ -78,14 +86,14 @@ public class ChartUtil {
                         List<Point> piePoints = chartVo.getPiePoints();
                         List<Point> columnPoints = chartVo.getColumnPoints();
                         String totalAmount = chartVo.getTotalAmount();
+                        LinearLayout rankingLayout = view.findViewById(R.id.ranking_layout);
                         if (piePoints != null && piePoints.size() > 0) {
                             lineChart.setVisibility(View.VISIBLE);
-                            pieChart.setVisibility(View.VISIBLE);
+                            pieChart.setVisibility(View.GONE);
                             noDataView.setVisibility(View.GONE);
                             generateLineChart(linePoints, lineChart);
                             generatePieChart(piePoints, pieChart);
                             HorizontalChartView columnChart = (HorizontalChartView) view.findViewById(R.id.ranking_list);
-                            LinearLayout rankingLayout = view.findViewById(R.id.ranking_layout);
 //                            List<Point> barList = ChartUtil.generateMockPiePoints();
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, columnPoints.size() * 76 + 10);
                             columnChart.setLayoutParams(params);
@@ -98,6 +106,7 @@ public class ChartUtil {
                             pieChart.setVisibility(View.GONE);
                             noDataView.setVisibility(View.VISIBLE);
                             totalSummaryValueView.setText("0");
+                            rankingLayout.setVisibility(View.GONE);
                         }
                     }
                 });
@@ -132,7 +141,7 @@ public class ChartUtil {
                 .setName("时间")
                 .setValues(axisValues);
         axisy.setTextColor(Color.BLACK)
-                .setName("金额")
+//                .setName("金额")
                 .setHasLines(true)
                 .setMaxLabelChars(5);
         List<PointValue> values = new ArrayList<>();
@@ -144,6 +153,7 @@ public class ChartUtil {
                 .setColor(Color.parseColor("#008577"))
                 .setHasLabelsOnlyForSelected(true)
                 .setHasPoints(true)
+                .setStrokeWidth(2)
                 .setShape(ValueShape.CIRCLE)
                 .setPointRadius(3);
         lines.add(line);
@@ -161,7 +171,7 @@ public class ChartUtil {
         int size = points == null ? 0 : points.size();
         List<SliceValue> values = new ArrayList<SliceValue>();
         for (int i = 0; i < size; i++) {
-            SliceValue sliceValue = new SliceValue(points.get(i).getValue(), ChartUtils.COLORS[i]);
+            SliceValue sliceValue = new SliceValue(points.get(i).getValue(), COLORS[i]);
             sliceValue.setLabel(points.get(i).getName() + ":" + points.get(i).getValue());
             values.add(sliceValue);
         }

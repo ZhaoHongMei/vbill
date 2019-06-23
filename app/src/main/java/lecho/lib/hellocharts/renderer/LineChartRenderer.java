@@ -52,8 +52,9 @@ public class LineChartRenderer extends AbstractChartRenderer {
         this.linePaint.setStrokeCap(Cap.ROUND);
         this.linePaint.setStrokeWidth((float)ChartUtils.dp2px(this.density, 3));
         this.pointPaint.setAntiAlias(true);
-        this.pointPaint.setStrokeWidth(5);
-        this.pointPaint.setStyle(Style.STROKE);
+        this.pointPaint.setStrokeWidth(1);
+        this.pointPaint.setStyle(Style.FILL_AND_STROKE);
+
         this.checkPrecision = ChartUtils.dp2px(this.density, 2);
     }
 
