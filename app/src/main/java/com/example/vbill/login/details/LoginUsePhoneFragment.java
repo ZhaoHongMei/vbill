@@ -179,10 +179,10 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
         String telephoneNumber = telephoneNumberView.getText().toString();
         try {
             checkIfPhoneNumerExists(telephoneNumber);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "sendVerificationCode1: "+isTelephoneNumberExists);
+        Log.d(TAG, "sendVerificationCode1: " + isTelephoneNumberExists);
         if (!isTelephoneNumberValid(telephoneNumber) || !isTelephoneNumberExists) {
             telephoneNumberView.requestFocus();
             return;
@@ -322,7 +322,7 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
 
                 JsonObject jsonObject = gson.fromJson(responseData, JsonObject.class);
                 JsonElement data = jsonObject.get("data");
-                if (data.isJsonObject()) {
+                if (data != null && data.isJsonObject()) {
                     isTelephoneNumberExists = data.getAsJsonObject().get("isTelephoneNumberExists").getAsBoolean();
                     activity.runOnUiThread(new Runnable() {
                         @Override
@@ -356,12 +356,13 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
         }
         return true;
     }
+
     private void checkIfUserExisted(String username, String password) {
         Map<String, String> map = new HashMap<String, String>();
         map.put("username", username);
         map.put("password", password);
         String userJson = gson.toJson(map);
-        Log.d(TAG, "checkIfUserExisted: usename: "+username+"password: "+password);
+        Log.d(TAG, "checkIfUserExisted: usename: " + username + "password: " + password);
         String url = Constants.USER_SERVER_PREFIX + "v1/esc/login";
 
         HttpUtil.sendOkHttpPostRequest(userJson, url, new Callback() {

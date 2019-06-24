@@ -1,5 +1,6 @@
 package com.example.vbill.home;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -30,6 +31,7 @@ import com.example.vbill.home.details.HomeDetailFragment;
 import com.example.vbill.home.details.discovery.HomeDiscoveryFragment;
 import com.example.vbill.home.details.HomeLoginFragment;
 import com.example.vbill.home.details.HomeMyFragment;
+import com.example.vbill.service.MyService;
 import com.example.vbill.util.Utility;
 
 import java.util.List;
@@ -66,6 +68,8 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         Utility.fullScreen(this);
+        Intent intent = new Intent(this, MyService.class);
+        startService(intent);
         //set fragments
         initFragment();
     }
@@ -95,6 +99,7 @@ public class HomeActivity extends AppCompatActivity implements HomeDetailFragmen
             return false;
         }
     };
+
     //对返回键进行监听
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
