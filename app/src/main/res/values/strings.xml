@@ -49,6 +49,8 @@
     <string name="changetheme">切换主题</string>
     <string name="advice">意见反馈</string>
     <string name="bindphone">绑定手机</string>
+    <string name="go_clock">去打卡</string>
+    <string name="have_clock">已打卡</string>
 
     <!--PhoneLogin Fragment-->
     <string name="phone_login_username">用户名</string>

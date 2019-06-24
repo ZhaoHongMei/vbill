@@ -66,16 +66,17 @@ import okhttp3.Response;
 public class HomeMyFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "HomeMyFragment";
     private static HomeMyFragment fragment;
+    private static boolean haveClock = false;
     private OnFragmentInteractionListener mListener;
     private boolean loginFlag = false;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
 
     private LinearLayout homeMylogin;
-    private ImageView userPhoto;
+    private ImageView userPhoto,goClockImage;
     private TextView loginText, billDay, billCount,signDay;
     private Button logOutLayout;
-    private LinearLayout changeUserLayout;
+    private LinearLayout changeUserLayout,goClock;
     private LinearLayout generalLogoutLayout;
     private String customerId;
     private SharedPreferences loginPref;
@@ -129,11 +130,15 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         billCount = homeMyView.findViewById(R.id.bill_count);
         shareLayout = homeMyView.findViewById(R.id.share_layout);
         signDay = homeMyView.findViewById(R.id.sign_day);
+        goClock = homeMyView.findViewById(R.id.go_clock);
+        goClockImage = homeMyView.findViewById(R.id.go_clock_image);
+
         homeMylogin.setOnClickListener(this);
         userPhoto.setOnClickListener(this);
         logOutLayout.setOnClickListener(this);
         changeUserLayout.setOnClickListener(this);
         shareLayout.setOnClickListener(this);
+        goClock.setOnClickListener(this);
         loginPref = getActivity().getSharedPreferences("login", getActivity().MODE_PRIVATE);
         customerId = String.valueOf(loginPref.getInt("userId", -1));
 
@@ -180,7 +185,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
             generalLogoutLayout.setVisibility(View.VISIBLE);
             String defaultUserPhoto = Constants.USER_SERVER_PREFIX + "v1/esc/images/defaultUserPhoto.png";
             String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
-            getBillDayAndCount();
+            getBillRecordInfo();
             //Glide.with(getContext()).load(photoPath).into(userPhoto);
             Glide.with(getContext()).load(photoPath).asBitmap().centerCrop().into(new BitmapImageViewTarget(userPhoto) {
                 @Override
@@ -248,6 +253,11 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 //File file = ShareToolUtil.saveSharePic(getContext(), thumb);
                 //Log.d(TAG, "onClick: file " + file);
                 shareImageDefault(copyToFolder());
+                break;
+            case R.id.go_clock:
+                if(haveClock == false){
+                    goToClock();
+                }
                 break;
             default:
                 break;
@@ -329,7 +339,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         mListener = null;
     }
 
-    public void getBillDayAndCount() {
+    public void getBillRecordInfo() {
         String address = Constants.SERVER_PREFIX + "v1/esc/" + customerId + "/totalCounts";
         HttpUtil.sendOkHttpGetRequest(address, new Callback() {
             @Override
@@ -349,10 +359,42 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                         Log.d(TAG, "onResponse: " + responseData);
                         if (responseData != null && "200".equals(statusCode)) {
                             JsonObject dataJson = gson.fromJson(jsonObject.get("data"), JsonObject.class);
+                            signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
                             billDay.setText((String.valueOf(dataJson.get("totalDay"))) + "天");
                             billCount.setText(String.valueOf(dataJson.get("totalAccountsCount")) + "笔");
                         } else {
                             Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+    public void goToClock(){
+        String address = Constants.SERVER_PREFIX + "v1/esc/" + customerId + "/clock";
+        HttpUtil.sendOkHttpGetRequest(address, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Gson gson = new Gson();
+                        JsonObject jsonObject = gson.fromJson(responseData, JsonObject.class);
+                        String statusCode = gson.fromJson(jsonObject.get("statusCode"), String.class);
+                        Log.d(TAG, "onResponse: " + responseData);
+                        if (responseData != null && "200".equals(statusCode)) {
+                            JsonObject dataJson = gson.fromJson(jsonObject.get("data"), JsonObject.class);
+                            signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
+                            goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
+                            haveClock = true;
+                        } else {
+                            Toast.makeText(getActivity(), "打卡数据处理失败", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
