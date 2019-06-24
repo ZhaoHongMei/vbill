@@ -93,6 +93,7 @@
 
 
     <string name="title_activity_investment">InvestmentActivity</string>
+
     <!--customdetepicker-->
     <string name="cancel">取消</string>
     <string name="title">请选择时间</string>

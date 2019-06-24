@@ -67,4 +67,5 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation files('lib/hellocharts-library-1.5.8.jar')
     implementation 'com.facebook.fresco:fresco:1.10.0'
+    implementation 'com.jakewharton:butterknife:8.8.1'
 }

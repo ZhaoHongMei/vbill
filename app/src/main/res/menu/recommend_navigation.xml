@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/recommend_thumbUp"
+        android:icon="@drawable/recommend_thumbup"
+        android:title="赞" />
+
+    <item
+        android:id="@+id/recommend_comment"
+        android:icon="@drawable/recommend_commend"
+        android:title="评论" />
+
+    <item
+        android:id="@+id/recommend_share"
+        android:icon="@drawable/recommend_share"
+        android:title="分享" />
+
+</menu>

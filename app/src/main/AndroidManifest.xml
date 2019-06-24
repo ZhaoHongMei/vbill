@@ -79,7 +79,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".home.details.discovery.recommend.DiscoveryRecommendActivity"
+            android:label="文章详情" >
+            <intent-filter>
+                <action android:name="android.intent.action.DiscoveryRecommend" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <service
             android:name=".service.MyService"
             android:enabled="true"

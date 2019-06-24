@@ -3,12 +3,14 @@ package com.example.vbill.home.details.discovery;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.ImageDecoder;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -25,8 +27,15 @@ import android.widget.Toast;
 
 import com.example.vbill.R;
 import com.example.vbill.adapter.DiscoveryMenuAdapter;
+import com.example.vbill.adapter.DiscoveryRecommendMenuAdapter;
 import com.example.vbill.bean.DiscoveryMenu;
 import com.example.vbill.bean.ImageInfo;
+import com.example.vbill.bean.discovery.recommend.DiscoveryRecommendResponse;
+import com.example.vbill.bean.discovery.recommend.RecommendInfo;
+import com.example.vbill.bean.discovery.recommend.RecommendMenu;
+import com.example.vbill.util.Constants;
+import com.example.vbill.util.HttpUtil;
+import com.example.vbill.util.Utility;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.drawable.ScalingUtils;
@@ -37,8 +46,13 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 
 /**
@@ -53,6 +67,15 @@ public class HomeDiscoveryFragment extends Fragment implements View.OnClickListe
     private static HomeDiscoveryFragment fragment;
     Context context;
     private RecyclerView recyclerView;
+    DiscoveryRecommendResponse discoveryRecommendResponse;
+    private RecyclerView recommendMenuView;
+
+    public FragmentActivity activity;
+    public SharedPreferences loginPref;
+    public SharedPreferences recommendPref;
+    public SharedPreferences.Editor editor;
+
+    private String userId;
 
     // 图片轮播控件
     private ViewPager mViewPager;
@@ -124,6 +147,7 @@ public class HomeDiscoveryFragment extends Fragment implements View.OnClickListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_discovery, container, false);
 
@@ -135,6 +159,10 @@ public class HomeDiscoveryFragment extends Fragment implements View.OnClickListe
         DiscoveryMenuAdapter discoveryMenuAdapter = new DiscoveryMenuAdapter(container.getContext(),initDescoveryMenu());
         recyclerView.setAdapter(discoveryMenuAdapter);
 
+        activity = getActivity();
+        loginPref = activity.getSharedPreferences("login", activity.MODE_PRIVATE);
+        userId = String.valueOf(loginPref.getInt("userId", -1));
+        requestDiscoveryRecommend(userId, view, container);
 
         //轮播
         initView(view);
@@ -148,12 +176,16 @@ public class HomeDiscoveryFragment extends Fragment implements View.OnClickListe
      */
     private void initEvent() {
         imageInfoList = new ArrayList<>();
-        imageInfoList.add(new ImageInfo(1, "6 1 8 权益来袭", "", "http://d.hiphotos.baidu.com/image/pic/item/6159252dd42a2834a75bb01156b5c9ea15cebf2f.jpg", "http://www.cnblogs.com/luhuan/"));
-        imageInfoList.add(new ImageInfo(1, "吃美食立减 10元", "", "http://c.hiphotos.baidu.com/image/h%3D300/sign=cfce96dfa251f3dedcb2bf64a4eff0ec/4610b912c8fcc3ce912597269f45d688d43f2039.jpg", "http://www.cnblogs.com/luhuan/"));
-        imageInfoList.add(new ImageInfo(1, "旅游才是续命良药", "", "http://e.hiphotos.baidu.com/image/pic/item/6a600c338744ebf85ed0ab2bd4f9d72a6059a705.jpg", "http://www.cnblogs.com/luhuan/"));
-        imageInfoList.add(new ImageInfo(1, "理财干货", "仅展示", "http://b.hiphotos.baidu.com/image/h%3D300/sign=8ad802f3801001e9513c120f880e7b06/a71ea8d3fd1f4134be1e4e64281f95cad1c85efa.jpg", ""));
-        imageInfoList.add(new ImageInfo(1, "签到送积分", "仅展示", "http://e.hiphotos.baidu.com/image/h%3D300/sign=73443062281f95cab9f594b6f9177fc5/72f082025aafa40fafb5fbc1a664034f78f019be.jpg", ""));
-
+//        imageInfoList.add(new ImageInfo(1, "6 1 8 权益来袭", "", "http://d.hiphotos.baidu.com/image/pic/item/6159252dd42a2834a75bb01156b5c9ea15cebf2f.jpg", "http://www.cnblogs.com/luhuan/"));
+//        imageInfoList.add(new ImageInfo(1, "吃美食立减 10元", "", "http://img1.juimg.com/160917/328298-16091H1535663.jpg", "http://www.cnblogs.com/luhuan/"));
+//        imageInfoList.add(new ImageInfo(1, "旅游才是续命良药", "", "http://e.hiphotos.baidu.com/image/pic/item/6a600c338744ebf85ed0ab2bd4f9d72a6059a705.jpg", "http://www.cnblogs.com/luhuan/"));
+//        imageInfoList.add(new ImageInfo(1, "理财干货", "仅展示", "http://b.hiphotos.baidu.com/image/h%3D300/sign=8ad802f3801001e9513c120f880e7b06/a71ea8d3fd1f4134be1e4e64281f95cad1c85efa.jpg", ""));
+//        imageInfoList.add(new ImageInfo(1, "签到送积分", "仅展示", "http://e.hiphotos.baidu.com/image/h%3D300/sign=73443062281f95cab9f594b6f9177fc5/72f082025aafa40fafb5fbc1a664034f78f019be.jpg", ""));
+        imageInfoList.add(new ImageInfo(1, "6 1 8 权益来袭", "", "http://101.225.90.196:4444/lunbo_618.jpg", "http://www.cnblogs.com/luhuan/"));
+        imageInfoList.add(new ImageInfo(1, "吃美食立减 10元", "", "http://101.225.90.196:4444/lunbo_meishi.jpg", "http://www.cnblogs.com/luhuan/"));
+        imageInfoList.add(new ImageInfo(1, "旅游才是续命良药", "", "http://101.225.90.196:4444/lunbo_lvxing.jpg", "http://www.cnblogs.com/luhuan/"));
+        imageInfoList.add(new ImageInfo(1, "理财干货", "仅展示", "http://101.225.90.196:4444/lunbo_licai.jpg", ""));
+        imageInfoList.add(new ImageInfo(1, "签到送积分", "仅展示", "http://101.225.90.196:4444/lunbo_qiandao.jpg", ""));
 
     }
 
@@ -304,6 +336,61 @@ public class HomeDiscoveryFragment extends Fragment implements View.OnClickListe
         return discoveryMenus;
     }
 
+    public void requestDiscoveryRecommend(String userId, View view,ViewGroup container){
+
+//        String discoveryRecommendUrl = Constants.SERVER_PREFIX + "v1/esc/recommendations/" + userId;
+        String discoveryRecommendUrl = Constants.SERVER_PREFIX + "v1/esc/recommendations/5";
+        HttpUtil.sendOkHttpGetRequest(discoveryRecommendUrl, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                getActivity().runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+                recommendPref = activity.getSharedPreferences("recommend", activity.MODE_PRIVATE);
+                editor = recommendPref.edit();
+                editor.putString("recommendResponseString", responseText);
+                editor.commit();
+                discoveryRecommendResponse = Utility.handleDiscoveryRecommend(responseText);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (discoveryRecommendResponse.getRecommendInfo().size() > 0 && 200 == (discoveryRecommendResponse.getStatusCode())) {
+                            showRecommendMenu(discoveryRecommendResponse, view, container);
+                        }else{
+                            Toast.makeText(getContext(), "为您推荐列表无数据", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void showRecommendMenu(DiscoveryRecommendResponse discoveryRecommendResponse, View view, ViewGroup container){
+        recommendMenuView = (RecyclerView)view.findViewById(R.id.discovery_recommend_menu);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recommendMenuView.setLayoutManager(layoutManager);
+        List<RecommendInfo> recommendInfos = discoveryRecommendResponse.getRecommendInfo();
+        List<RecommendMenu> recommendMenus = new ArrayList<>();
+        for (RecommendInfo recommendInfo:recommendInfos) {
+            RecommendMenu recommendMenu = new RecommendMenu();
+            recommendMenu.setImagePath(recommendInfo.getRecommendMenu().getImagePath());
+            recommendMenu.setDescription1(recommendInfo.getRecommendMenu().getDescription1());
+            recommendMenu.setDescription2(recommendInfo.getRecommendMenu().getDescription2());
+            recommendMenu.setCid(recommendInfo.getBasic().getCid());
+            recommendMenus.add(recommendMenu);
+        }
+        DiscoveryRecommendMenuAdapter discoveryMenuAdapter = new DiscoveryRecommendMenuAdapter(container.getContext(),recommendMenus);
+        recommendMenuView.setAdapter(discoveryMenuAdapter);
+
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

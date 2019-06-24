@@ -22,16 +22,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
+<!--
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:src="@drawable/discovery_title_img1" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/home_discovery_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+-->
 
                 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -86,6 +82,12 @@
                         </LinearLayout>
                     </FrameLayout>
                 </android.support.constraint.ConstraintLayout>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/home_discovery_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <include layout="@layout/discovery_recommend" />
 
