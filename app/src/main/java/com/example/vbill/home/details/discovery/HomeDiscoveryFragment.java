@@ -181,11 +181,11 @@ public class HomeDiscoveryFragment extends Fragment implements View.OnClickListe
 //        imageInfoList.add(new ImageInfo(1, "旅游才是续命良药", "", "http://e.hiphotos.baidu.com/image/pic/item/6a600c338744ebf85ed0ab2bd4f9d72a6059a705.jpg", "http://www.cnblogs.com/luhuan/"));
 //        imageInfoList.add(new ImageInfo(1, "理财干货", "仅展示", "http://b.hiphotos.baidu.com/image/h%3D300/sign=8ad802f3801001e9513c120f880e7b06/a71ea8d3fd1f4134be1e4e64281f95cad1c85efa.jpg", ""));
 //        imageInfoList.add(new ImageInfo(1, "签到送积分", "仅展示", "http://e.hiphotos.baidu.com/image/h%3D300/sign=73443062281f95cab9f594b6f9177fc5/72f082025aafa40fafb5fbc1a664034f78f019be.jpg", ""));
-        imageInfoList.add(new ImageInfo(1, "6 1 8 权益来袭", "", "http://101.225.90.196:4444/lunbo_618.jpg", "http://www.cnblogs.com/luhuan/"));
-        imageInfoList.add(new ImageInfo(1, "吃美食立减 10元", "", "http://101.225.90.196:4444/lunbo_meishi.jpg", "http://www.cnblogs.com/luhuan/"));
-        imageInfoList.add(new ImageInfo(1, "旅游才是续命良药", "", "http://101.225.90.196:4444/lunbo_lvxing.jpg", "http://www.cnblogs.com/luhuan/"));
-        imageInfoList.add(new ImageInfo(1, "理财干货", "仅展示", "http://101.225.90.196:4444/lunbo_licai.jpg", ""));
-        imageInfoList.add(new ImageInfo(1, "签到送积分", "仅展示", "http://101.225.90.196:4444/lunbo_qiandao.jpg", ""));
+        imageInfoList.add(new ImageInfo(1, "6 1 8 权益来袭", "", Constants.SERVER_PREFIX + "v1/esc/images/recommend/lunbo_618.jpg", "http://www.cnblogs.com/luhuan/"));
+        imageInfoList.add(new ImageInfo(1, "吃美食立减 10元", "", Constants.SERVER_PREFIX + "v1/esc/images/recommend/lunbo_meishi.jpg", "http://www.cnblogs.com/luhuan/"));
+        imageInfoList.add(new ImageInfo(1, "旅游才是续命良药", "", Constants.SERVER_PREFIX + "v1/esc/images/recommend/lunbo_lvxing.jpg", "http://www.cnblogs.com/luhuan/"));
+        imageInfoList.add(new ImageInfo(1, "理财干货", "仅展示", Constants.SERVER_PREFIX + "v1/esc/images/recommend/lunbo_licai.jpg", ""));
+        imageInfoList.add(new ImageInfo(1, "签到送积分", "仅展示", Constants.SERVER_PREFIX + "v1/esc/images/recommend/lunbo_qiandao.jpg", ""));
 
     }
 
@@ -338,8 +338,8 @@ public class HomeDiscoveryFragment extends Fragment implements View.OnClickListe
 
     public void requestDiscoveryRecommend(String userId, View view,ViewGroup container){
 
-//        String discoveryRecommendUrl = Constants.SERVER_PREFIX + "v1/esc/recommendations/" + userId;
-        String discoveryRecommendUrl = Constants.SERVER_PREFIX + "v1/esc/recommendations/5";
+        String discoveryRecommendUrl = Constants.SERVER_PREFIX + "v1/esc/recommendations/" + userId;
+//        String discoveryRecommendUrl = Constants.SERVER_PREFIX + "v1/esc/recommendations/5";
         HttpUtil.sendOkHttpGetRequest(discoveryRecommendUrl, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
