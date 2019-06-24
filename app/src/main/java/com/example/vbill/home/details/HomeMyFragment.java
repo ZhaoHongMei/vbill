@@ -73,7 +73,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
 
     private LinearLayout homeMylogin;
     private ImageView userPhoto;
-    private TextView loginText, billDay, billCount;
+    private TextView loginText, billDay, billCount,signDay;
     private Button logOutLayout;
     private LinearLayout changeUserLayout;
     private LinearLayout generalLogoutLayout;
@@ -128,6 +128,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         billDay = homeMyView.findViewById(R.id.bill_day);
         billCount = homeMyView.findViewById(R.id.bill_count);
         shareLayout = homeMyView.findViewById(R.id.share_layout);
+        signDay = homeMyView.findViewById(R.id.sign_day);
         homeMylogin.setOnClickListener(this);
         userPhoto.setOnClickListener(this);
         logOutLayout.setOnClickListener(this);
@@ -233,6 +234,9 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 editor.remove("userPhotoPath");
                 editor.apply();
                 refreshInternal();
+                signDay.setText("0天");
+                billDay.setText("0天");
+                billCount.setText("0笔");
                 break;
             case R.id.me_change_user:
                 Intent intent = new Intent("android.intent.action.Login");
