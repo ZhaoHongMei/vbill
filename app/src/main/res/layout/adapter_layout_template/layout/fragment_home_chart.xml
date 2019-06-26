@@ -146,7 +146,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="10dp">
+                    android:padding="2dp">
 
                     <TextView
                         android:id="@+id/no_data_text"
@@ -163,7 +163,8 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="30dp"
-                        android:paddingVertical="20dp" />
+                        android:paddingVertical="20dp"
+                        android:paddingRight="10dp"/>
 
                     <LinearLayout
                         android:id="@+id/ranking_layout"

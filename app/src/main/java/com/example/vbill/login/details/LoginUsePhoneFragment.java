@@ -1,7 +1,9 @@
 package com.example.vbill.login.details;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -188,6 +190,8 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
             return;
         }
         String url = Constants.USER_SERVER_PREFIX + "v1/esc/sendVerficationCode/" + telephoneNumber;
+
+        getVerificationCodeButton.setBackgroundResource(R.drawable.border_grey_shape);
         Log.d(TAG, "sendVerificationCode: ");
         HttpUtil.sendOkHttpGetRequest(url, new Callback() {
             @Override

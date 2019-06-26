@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -31,6 +32,7 @@ public class MyService extends Service {
         builder.setContentText("点击进入微账单");
         builder.setWhen(System.currentTimeMillis());
         builder.setSmallIcon(R.drawable.v_bill);
+        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.v_bill));
         builder.setContentIntent(pi);
 
 

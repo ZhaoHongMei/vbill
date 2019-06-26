@@ -254,6 +254,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
             telephoneNumberView.requestFocus();
             return;
         }
+        getVerifyCodeButton.setBackgroundResource(R.drawable.border_grey_shape);
         String url = Constants.USER_SERVER_PREFIX + "v1/esc/sendVerficationCode/" + telephoneNumber;
         HttpUtil.sendOkHttpGetRequest(url, new Callback() {
             @Override
