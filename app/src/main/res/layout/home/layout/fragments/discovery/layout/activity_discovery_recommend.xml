@@ -30,7 +30,7 @@
                     android:text="文章详情"
                     android:textColor="#fff"
                     android:textSize="20sp" />
-
+<!--
                 <Button
                     android:id="@+id/back_button"
                     android:layout_width="30dp"
@@ -39,6 +39,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/back" />
+                    -->
             </RelativeLayout>
 
             <LinearLayout

@@ -57,7 +57,7 @@
                         android:id="@+id/sign_day"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4天"
+                        android:text="0天"
                         android:textColor="@color/white"
                         android:textSize="18sp" />
 
@@ -149,8 +149,9 @@
                         android:paddingTop="10dp"/>
                 </LinearLayout>
 
-                <!--切换主题-->
+                <!--打卡-->
                 <LinearLayout
+                    android:id="@+id/go_clock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -159,14 +160,15 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp">
                     <ImageView
+                        android:id="@+id/go_clock_image"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/theme"/>
+                        android:src="@drawable/goclcok"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/changetheme"
+                        android:text="@string/go_clock"
                         android:paddingTop="10dp"/>
                 </LinearLayout>
 
