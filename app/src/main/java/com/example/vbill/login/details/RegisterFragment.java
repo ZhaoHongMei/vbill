@@ -1,6 +1,7 @@
 package com.example.vbill.login.details;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -248,13 +249,15 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     private void sendVerificationCode() {
         String telephoneNumber = telephoneNumberView.getText().toString();
         if (!isTelephoneNumberValid(telephoneNumber) || isTelephoneNumberExists) {
             telephoneNumberView.requestFocus();
             return;
         }
-        getVerifyCodeButton.setBackgroundResource(R.drawable.border_grey_shape);
+//        getVerifyCodeButton.setBackgroundResource(R.drawable.border_grey_shape);
+        getVerifyCodeButton.setTextColor(R.color.grey);
         String url = Constants.USER_SERVER_PREFIX + "v1/esc/sendVerficationCode/" + telephoneNumber;
         HttpUtil.sendOkHttpGetRequest(url, new Callback() {
             @Override

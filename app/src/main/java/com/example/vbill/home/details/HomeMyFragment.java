@@ -48,6 +48,11 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 import okhttp3.Call;
@@ -68,12 +73,13 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
     private static HomeMyFragment fragment;
     private OnFragmentInteractionListener mListener;
     private boolean loginFlag = false;
+    private boolean canClockFlag;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
 
     private LinearLayout homeMylogin;
     private ImageView userPhoto,goClockImage;
-    private TextView loginText, billDay, billCount,signDay;
+    private TextView loginText, billDay, billCount,signDay,clockTxt;
     private Button logOutLayout;
     private LinearLayout changeUserLayout,goClock;
     private LinearLayout generalLogoutLayout;
@@ -131,6 +137,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         signDay = homeMyView.findViewById(R.id.sign_day);
         goClock = homeMyView.findViewById(R.id.go_clock);
         goClockImage = homeMyView.findViewById(R.id.go_clock_image);
+        clockTxt = homeMyView.findViewById(R.id.clock_txt);
 
         homeMylogin.setOnClickListener(this);
         userPhoto.setOnClickListener(this);
@@ -157,7 +164,13 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         customerId = String.valueOf(loginPref.getInt("userId", -1));
         refreshInternal();
         getBillRecordInfo();
-        goToClock();
+        if(!canClockFlag){
+            clockTxt.setText("已打卡");
+            goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
+        }else{
+            clockTxt.setText("去打卡");
+            goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.goclcok));
+        }
     }
 
     private void refreshInternal() {
@@ -189,6 +202,9 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
             String defaultUserPhoto = Constants.USER_SERVER_PREFIX + "v1/esc/images/defaultUserPhoto.png";
             String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
             getBillRecordInfo();
+            editor.putInt("ClockYear",0);
+            editor.putInt("ClockDayOfYear",0);
+            editor.apply();
             //Glide.with(getContext()).load(photoPath).into(userPhoto);
             Glide.with(getContext()).load(photoPath).asBitmap().centerCrop().into(new BitmapImageViewTarget(userPhoto) {
                 @Override
@@ -242,11 +258,10 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 editor.remove("userPhotoPath");
                 editor.apply();
                 refreshInternal();
-                signDay.setText("0天");
-                billDay.setText("0天");
-                billCount.setText("0笔");
+                clearBillRecordInfo();
                 break;
             case R.id.me_change_user:
+                clearBillRecordInfo();
                 Intent intent = new Intent("android.intent.action.Login");
                 startActivity(intent);
                 break;
@@ -258,7 +273,9 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 shareImageDefault(copyToFolder());
                 break;
             case R.id.go_clock:
-                goToClock();
+                if(canClockFlag){
+                    goToClock();
+                }
                 break;
             default:
                 break;
@@ -363,6 +380,8 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                             signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
                             billDay.setText((String.valueOf(dataJson.get("totalDay"))) + "天");
                             billCount.setText(String.valueOf(dataJson.get("totalAccountsCount")) + "笔");
+                            Boolean canClock = gson.fromJson(dataJson.get("canClockFlag"), Boolean.class);
+                            canClockFlag = canClock;
                         } else {
                             Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
                         }
@@ -393,13 +412,10 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                             JsonObject dataJson = gson.fromJson(jsonObject.get("data"), JsonObject.class);
                             String msgJson = gson.fromJson(dataJson.get("msg"), String.class);
                             Log.d(TAG, "run: msgJson" + msgJson );
-                            if(msgJson.equals("打卡成功")){
-                                signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
-                                goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
-                            }else {
-                                signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
-                                goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
-                            }
+                            signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
+                            clockTxt.setText("已打卡");
+                            goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
+
                         } else {
                             Toast.makeText(getActivity(), "打卡数据处理失败", Toast.LENGTH_SHORT).show();
                         }
@@ -412,6 +428,18 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         signDay.setText("0天");
         billDay.setText("0天");
         billCount.setText("0笔");
+    }
+    public boolean canClock(){
+        Calendar calendar = Calendar.getInstance();
+        int year=calendar.get(Calendar.YEAR);
+        int day=calendar.get(Calendar.DAY_OF_YEAR);
+        int storedYear= pref.getInt("ClockYear",0);
+        int storedDay=pref.getInt("ClockDayOfYear",0);
+        Log.d(TAG, "canClock: "+ "storedYear"+ storedYear+";storedDay" + storedDay + ";year+day"+ year + day);
+        if(storedYear == year && storedDay == day){
+            return false;
+        }
+        return true;
     }
     /**
      * This interface must be implemented by activities that contain this

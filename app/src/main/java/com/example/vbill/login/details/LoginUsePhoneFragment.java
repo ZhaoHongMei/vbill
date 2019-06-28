@@ -1,5 +1,6 @@
 package com.example.vbill.login.details;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -177,6 +178,7 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     private void sendVerificationCode() {
         String telephoneNumber = telephoneNumberView.getText().toString();
         try {
@@ -191,7 +193,7 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
         }
         String url = Constants.USER_SERVER_PREFIX + "v1/esc/sendVerficationCode/" + telephoneNumber;
 
-        getVerificationCodeButton.setBackgroundResource(R.drawable.border_grey_shape);
+        getVerificationCodeButton.setTextColor(R.color.grey);
         Log.d(TAG, "sendVerificationCode: ");
         HttpUtil.sendOkHttpGetRequest(url, new Callback() {
             @Override
