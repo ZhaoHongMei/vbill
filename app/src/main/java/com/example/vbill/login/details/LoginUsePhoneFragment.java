@@ -66,7 +66,7 @@ public class LoginUsePhoneFragment extends Fragment implements View.OnClickListe
     private CheckBox remeberPass;
     private AutoCompleteTextView telephoneNumberView;
     private EditText verificationCodeView;
-    private Button getVerificationCodeButton;
+    private TextView getVerificationCodeButton;
     private TextView registerText;
     private TextView loginMethodText;
     private ProgressBar progressBar;

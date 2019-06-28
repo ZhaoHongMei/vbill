@@ -66,7 +66,6 @@ import okhttp3.Response;
 public class HomeMyFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "HomeMyFragment";
     private static HomeMyFragment fragment;
-    private static boolean haveClock = false;
     private OnFragmentInteractionListener mListener;
     private boolean loginFlag = false;
     private SharedPreferences pref;
@@ -141,7 +140,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         goClock.setOnClickListener(this);
         loginPref = getActivity().getSharedPreferences("login", getActivity().MODE_PRIVATE);
         customerId = String.valueOf(loginPref.getInt("userId", -1));
-
+        clearBillRecordInfo();
         return homeMyView;
     }
 
@@ -154,7 +153,11 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
 
     public void onResume() {
         super.onResume();
+        loginPref = getActivity().getSharedPreferences("login", getActivity().MODE_PRIVATE);
+        customerId = String.valueOf(loginPref.getInt("userId", -1));
         refreshInternal();
+        getBillRecordInfo();
+        goToClock();
     }
 
     private void refreshInternal() {
@@ -255,9 +258,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 shareImageDefault(copyToFolder());
                 break;
             case R.id.go_clock:
-                if(haveClock == false){
-                    goToClock();
-                }
+                goToClock();
                 break;
             default:
                 break;
@@ -390,9 +391,15 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                         Log.d(TAG, "onResponse: " + responseData);
                         if (responseData != null && "200".equals(statusCode)) {
                             JsonObject dataJson = gson.fromJson(jsonObject.get("data"), JsonObject.class);
-                            signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
-                            goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
-                            haveClock = true;
+                            String msgJson = gson.fromJson(dataJson.get("msg"), String.class);
+                            Log.d(TAG, "run: msgJson" + msgJson );
+                            if(msgJson.equals("打卡成功")){
+                                signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
+                                goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
+                            }else {
+                                signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
+                                goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
+                            }
                         } else {
                             Toast.makeText(getActivity(), "打卡数据处理失败", Toast.LENGTH_SHORT).show();
                         }
@@ -401,7 +408,11 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-
+    public void clearBillRecordInfo(){
+        signDay.setText("0天");
+        billDay.setText("0天");
+        billCount.setText("0笔");
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

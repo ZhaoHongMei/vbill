@@ -73,7 +73,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
     private Bitmap bitmap;
     private ImageView photoView;
     private String imagHttpPath;
-    private Button getVerifyCodeButton;
+    private TextView getVerifyCodeButton;
     private boolean isTelephoneNumberExists;
     private boolean isUserNameExists;
 
