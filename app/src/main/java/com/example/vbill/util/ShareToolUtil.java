@@ -4,17 +4,21 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 
 import com.example.vbill.R;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ShareToolUtil {
     private static String sharePicName = "share_pic.jpg";
     //private static String sharePicPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "UmeBrowser" + File.separator + "sharepic" + File.separator;
-    private static String sharePicPath = Environment.getExternalStorageDirectory().getPath() + "/DCIM/Screenshots/";;
+    private static String sharePicPath = Environment.getExternalStorageDirectory().getPath() + "/DCIM/Screenshots/";
+    private static final String TAG = "ShareToolUtil";
 
     /**
      * 保存图片，并返回一个File类型的文件
@@ -35,7 +39,7 @@ public class ShareToolUtil {
         try {
             FileOutputStream out = new FileOutputStream(filePic);
             if (bitmap == null) {
-                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.phone1);
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.qr_code_title);
             }
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
             try {
@@ -49,4 +53,5 @@ public class ShareToolUtil {
         }
         return filePic;
     }
+
 }

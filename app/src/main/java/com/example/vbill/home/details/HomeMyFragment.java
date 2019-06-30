@@ -73,10 +73,10 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
     private SharedPreferences.Editor editor;
 
     private LinearLayout homeMylogin;
-    private ImageView userPhoto,goClockImage;
-    private TextView loginText, billDay, billCount,signDay;
+    private ImageView userPhoto, goClockImage;
+    private TextView loginText, billDay, billCount, signDay;
     private Button logOutLayout;
-    private LinearLayout changeUserLayout,goClock;
+    private LinearLayout changeUserLayout, goClock;
     private LinearLayout generalLogoutLayout;
     private String customerId;
     private SharedPreferences loginPref;
@@ -141,6 +141,10 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         goClock.setOnClickListener(this);
         loginPref = getActivity().getSharedPreferences("login", getActivity().MODE_PRIVATE);
         customerId = String.valueOf(loginPref.getInt("userId", -1));
+
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            android.support.v4.app.ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.CHOOSE_FROM_ALBUM);
+        }
 
         return homeMyView;
     }
@@ -255,7 +259,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 shareImageDefault(copyToFolder());
                 break;
             case R.id.go_clock:
-                if(haveClock == false){
+                if (haveClock == false) {
                     goToClock();
                 }
                 break;
@@ -264,47 +268,14 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private File copyToFolder(){
-        return ShareToolUtil.saveSharePic(getActivity(),BitmapFactory.decodeResource(getResources(), R.drawable.qr_code_title));
-    }
-    protected File shotWindowScreen() {
-        // 获取屏幕
-
-        View dView = getActivity().getWindow().getDecorView();
-
-
-
-
-        dView.setDrawingCacheEnabled(true);
-        dView.buildDrawingCache();
-        Bitmap bmp = dView.getDrawingCache();
-        if (bmp != null) {
-            try {
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    android.support.v4.app.ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.CHOOSE_FROM_ALBUM);
-                } else {
-                    // 获取内置SD卡路径
-                    String sdCardPath = Environment.getExternalStorageDirectory().getPath() + "/DCIM/Screenshots";
-                    // 图片文件路径
-                    String imagePath = sdCardPath + File.separator + "screenshot.png";
-                    File file = new File(imagePath);
-                    File parentFile = file.getParentFile();
-                    if (!parentFile.exists()) {
-                        parentFile.mkdirs();
-                    }
-                    FileOutputStream os = new FileOutputStream(file);
-                    bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
-                    os.flush();
-                    os.close();
-                    return file;
-                }
-            } catch (Exception e) {
-                Log.d(TAG, "getscreenshot: file " + e.getMessage());
-            }
+    private File copyToFolder() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            android.support.v4.app.ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.CHOOSE_FROM_ALBUM);
+        } else {
+            return ShareToolUtil.saveSharePic(getActivity(), BitmapFactory.decodeResource(getResources(), R.drawable.qr_code_title));
         }
         return null;
     }
-
 
     protected void shareImageDefault(File file) {
 
@@ -312,7 +283,6 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         if (file != null && file.exists()) {
             Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
             intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(getActivity(), "com.example.vbill.fileprovider", file));// 分享的内容
-
             intent.setType("image/*");// 分享发送的数据类型
             Intent chooser = Intent.createChooser(intent, "Share image");
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -370,7 +340,8 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-    public void goToClock(){
+
+    public void goToClock() {
         String address = Constants.SERVER_PREFIX + "v1/esc/" + customerId + "/clock";
         HttpUtil.sendOkHttpGetRequest(address, new Callback() {
             @Override
