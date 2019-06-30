@@ -78,8 +78,8 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
     private SharedPreferences.Editor editor;
 
     private LinearLayout homeMylogin;
-    private ImageView userPhoto,goClockImage;
-    private TextView loginText, billDay, billCount,signDay,clockTxt;
+    private ImageView userPhoto, goClockImage;
+    private TextView loginText, billDay, billCount, signDay, clockTxt;
     private Button logOutLayout;
     private LinearLayout changeUserLayout, goClock;
     private LinearLayout generalLogoutLayout;
@@ -169,10 +169,10 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         customerId = String.valueOf(loginPref.getInt("userId", -1));
         refreshInternal();
         getBillRecordInfo();
-        if(!canClockFlag){
+        if (!canClockFlag) {
             clockTxt.setText("已打卡");
             goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
-        }else{
+        } else {
             clockTxt.setText("去打卡");
             goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.goclcok));
         }
@@ -207,8 +207,8 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
             String defaultUserPhoto = Constants.USER_SERVER_PREFIX + "v1/esc/images/defaultUserPhoto.png";
             String photoPath = pref.getString("userPhotoPath", defaultUserPhoto);
             getBillRecordInfo();
-            editor.putInt("ClockYear",0);
-            editor.putInt("ClockDayOfYear",0);
+            editor.putInt("ClockYear", 0);
+            editor.putInt("ClockDayOfYear", 0);
             editor.apply();
             //Glide.with(getContext()).load(photoPath).into(userPhoto);
             Glide.with(getContext()).load(photoPath).asBitmap().centerCrop().into(new BitmapImageViewTarget(userPhoto) {
@@ -278,8 +278,10 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                 shareImageDefault(copyToFolder());
                 break;
             case R.id.go_clock:
-                if(canClockFlag){
+                if (canClockFlag) {
                     goToClock();
+                } else {
+                    Toast.makeText(getContext(), "您今天已经打卡了！", Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
@@ -351,8 +353,15 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                             signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
                             billDay.setText((String.valueOf(dataJson.get("totalDay"))) + "天");
                             billCount.setText(String.valueOf(dataJson.get("totalAccountsCount")) + "笔");
-                            Boolean canClock = gson.fromJson(dataJson.get("canClockFlag"), Boolean.class);
-                            canClockFlag = canClock;
+                            Boolean ifClockedToday = gson.fromJson(dataJson.get("ifClockedToday"), Boolean.class);
+                            canClockFlag = ifClockedToday ? false : true;
+                            if (ifClockedToday) {
+                                clockTxt.setText("已打卡");
+                                goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
+                            } else {
+                                clockTxt.setText("去打卡");
+                                goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.goclcok));
+                            }
                         } else {
                             Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
                         }
@@ -383,7 +392,7 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
                         if (responseData != null && "200".equals(statusCode)) {
                             JsonObject dataJson = gson.fromJson(jsonObject.get("data"), JsonObject.class);
                             String msgJson = gson.fromJson(dataJson.get("msg"), String.class);
-                            Log.d(TAG, "run: msgJson" + msgJson );
+                            Log.d(TAG, "run: msgJson" + msgJson);
                             signDay.setText((String.valueOf(dataJson.get("clockDay"))) + "天");
                             clockTxt.setText("已打卡");
                             goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
@@ -396,23 +405,26 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-    public void clearBillRecordInfo(){
+
+    public void clearBillRecordInfo() {
         signDay.setText("0天");
         billDay.setText("0天");
         billCount.setText("0笔");
     }
-    public boolean canClock(){
+
+    public boolean canClock() {
         Calendar calendar = Calendar.getInstance();
-        int year=calendar.get(Calendar.YEAR);
-        int day=calendar.get(Calendar.DAY_OF_YEAR);
-        int storedYear= pref.getInt("ClockYear",0);
-        int storedDay=pref.getInt("ClockDayOfYear",0);
-        Log.d(TAG, "canClock: "+ "storedYear"+ storedYear+";storedDay" + storedDay + ";year+day"+ year + day);
-        if(storedYear == year && storedDay == day){
+        int year = calendar.get(Calendar.YEAR);
+        int day = calendar.get(Calendar.DAY_OF_YEAR);
+        int storedYear = pref.getInt("ClockYear", 0);
+        int storedDay = pref.getInt("ClockDayOfYear", 0);
+        Log.d(TAG, "canClock: " + "storedYear" + storedYear + ";storedDay" + storedDay + ";year+day" + year + day);
+        if (storedYear == year && storedDay == day) {
             return false;
         }
         return true;
     }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
