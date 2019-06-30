@@ -169,13 +169,6 @@ public class HomeMyFragment extends Fragment implements View.OnClickListener {
         customerId = String.valueOf(loginPref.getInt("userId", -1));
         refreshInternal();
         getBillRecordInfo();
-        if (!canClockFlag) {
-            clockTxt.setText("已打卡");
-            goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.haveclock));
-        } else {
-            clockTxt.setText("去打卡");
-            goClockImage.setImageDrawable(getResources().getDrawable(R.drawable.goclcok));
-        }
     }
 
     private void refreshInternal() {
